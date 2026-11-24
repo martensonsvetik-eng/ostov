@@ -283,7 +283,7 @@ export const en: Dict = {
       email: 'E-mail',
       consent: 'I agree to the processing of my data',
       submit: 'Request the catalogue',
-      success: 'Thank you, your request has been received',
+      success: 'Thank you for your interest in OSTOV',
       successText: 'We will send the catalogue within a working day.',
     },
     samples: {

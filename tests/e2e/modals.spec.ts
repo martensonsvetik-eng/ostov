@@ -100,7 +100,8 @@ test('фон не прокручивается, пока окно открыто
   await page.waitForTimeout(300);
   expect(await page.evaluate(() => window.scrollY)).toBe(before);
   await page.keyboard.press('Escape');
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).not.toBe('hidden');
+  // The dialog's 'close' event (which releases the lock) is queued after Esc, so poll.
+  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).overflow)).not.toBe('hidden');
 });
 
 test('на телефоне окно на весь экран, на компьютере — нет', async ({ page }, info) => {
@@ -271,7 +272,7 @@ test('каталог: «a@b» — ошибка формата; «a@b.ru» с с�
   await email.press('Enter');
   const success = d.locator('[data-success]');
   await expect(success).toBeVisible();
-  await expect(success.locator('[data-success-title]')).toHaveText('Спасибо, запрос принят');
+  await expect(success.locator('[data-success-title]')).toHaveText('Спасибо за интерес к ОСТОВ');
   await expect(success).toContainText('Мы отправим каталог в течение рабочего дня.');
   await expect(d).toBeVisible();
   expect(page.url()).toBe(url);

@@ -9,6 +9,7 @@
  * Hover (client round 2, hover devices only, off under reduced motion): the photo's inner
  * wrapper `.material__zoom` slowly scales to 1.04 while a #C9CFB4 hairline is drawn left →
  * right over the caption rule. The parallaxed <img> keeps its own transform untouched.
+ * No focus state: the scenes contain nothing focusable.
  */
 import { Picture } from 'astro:assets';
 import Button from '../ui/Button.astro';
@@ -151,12 +152,10 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
     }
   }
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .material:hover .material__zoom,
-    .material:focus-within .material__zoom {
+    .material:hover .material__zoom {
       transform: scale(1.04);
     }
-    .material:hover .material__caption::before,
-    .material:focus-within .material__caption::before {
+    .material:hover .material__caption::before {
       transform: scaleX(1);
     }
   }
