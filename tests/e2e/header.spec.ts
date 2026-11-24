@@ -128,3 +128,52 @@ test.describe('шапка: уменьшение движения', () => {
     expect(bad).toBe(0);
   });
 });
+
+test('логотип: SVG целиком, ширина контура близка к заданной', async ({ page }) => {
+  for (const url of ['/ostov/', '/ostov/en/']) {
+    await page.goto(url);
+    const r = await page.locator('.site-header__logo svg').evaluate((svg) => {
+      const b = (svg.querySelector('path') as SVGGraphicsElement).getBBox();
+      return { w: b.width, x: b.x, vb: (svg as SVGSVGElement).viewBox.baseVal.width };
+    });
+    expect(r.w).toBeGreaterThan(r.vb * 0.9);
+    expect(r.w).toBeLessThanOrEqual(r.vb + 1);
+  }
+});
+
+test.describe('компьютер от 1024 px: якоря видны целиком', () => {
+  test.use({ viewport: { width: 1024, height: 768 } });
+  for (const [url, label] of [['/ostov/', 'RU'], ['/ostov/en/', 'EN']] as const) {
+    test(`${label}`, async ({ page }, info) => {
+      test.skip(isMobile(info.project.name));
+      await page.goto(url);
+      await expect(page.locator('.site-header__menu-btn')).toBeHidden();
+      const links = page.locator('#site-menu nav a');
+      await expect(links).toHaveCount(5);
+      for (const a of await links.all()) await expect(a).toBeVisible();
+      const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(over).toBeLessThanOrEqual(0);
+      const hdr = await page.evaluate(() => {
+        const bar = document.querySelector('.site-header__bar')!.getBoundingClientRect();
+        const cta = document.querySelector('.site-header__cta')!.getBoundingClientRect();
+        return { right: cta.right, barRight: bar.right, height: document.querySelector('header')!.getBoundingClientRect().height };
+      });
+      expect(hdr.right).toBeLessThanOrEqual(hdr.barRight + 1);
+      await expect(page.locator('.site-header__cta')).toBeVisible();
+    });
+  }
+});
+
+test.describe('без JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('на телефоне якоря и переключатель языка доступны', async ({ page }, info) => {
+    test.skip(!isMobile(info.project.name));
+    await page.goto('/ostov/');
+    for (const name of ['Коллекции', 'Проекты', 'Как мы работаем', 'Архитекторам', 'Шоурум', 'EN']) {
+      await expect(page.locator('#site-menu').getByRole('link', { name })).toBeVisible();
+    }
+    await expect(page.locator('.site-header__menu-btn')).toBeHidden();
+    await page.locator('#site-menu').getByRole('link', { name: 'EN' }).click();
+    await expect(page).toHaveURL(/\/ostov\/en\/$/);
+  });
+});

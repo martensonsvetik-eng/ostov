@@ -3,7 +3,7 @@
  * current-section highlight via IntersectionObserver, and carrying the URL hash
  * over to the other-language page.
  */
-const DESKTOP = '(min-width: 73.75em)';
+const DESKTOP = '(min-width: 64em)';
 
 const focusableSelector = 'a[href], button:not([disabled])';
 

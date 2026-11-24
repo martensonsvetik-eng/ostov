@@ -152,7 +152,7 @@ a {
   }
 }
 
-@media (min-width: 73.75em) {
+@media (min-width: 64em) {
   html {
     --header-h: 80px;
   }
