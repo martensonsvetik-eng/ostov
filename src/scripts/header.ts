@@ -96,11 +96,18 @@ export function initHeader(root: HTMLElement): void {
     });
   }
 
-  const io = new IntersectionObserver(update, {
-    rootMargin: `-${Math.round(headerH())}px 0px -${(1 - probe) * 100}% 0px`,
-    threshold: [0, 1],
-  });
-  sections.forEach((s) => io.observe(s));
-  window.addEventListener('resize', update);
-  update();
+  // Set up after the first frame: measuring here, while the page is still loading, would force
+  // a synchronous layout of the whole document inside this script (Lighthouse «forced reflow»).
+  // After the frame the layout is already clean, and the observer's initial callback runs
+  // update() once for the starting position, so no explicit first call is needed.
+  requestAnimationFrame(() =>
+    setTimeout(() => {
+      const io = new IntersectionObserver(update, {
+        rootMargin: `-${Math.round(headerH())}px 0px -${(1 - probe) * 100}% 0px`,
+        threshold: [0, 1],
+      });
+      sections.forEach((s) => io.observe(s));
+      window.addEventListener('resize', update);
+    }),
+  );
 }

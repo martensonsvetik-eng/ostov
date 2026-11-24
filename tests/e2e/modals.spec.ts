@@ -307,6 +307,9 @@ test('доступность: axe без серьёзных нарушений �
   expect(r.violations.filter((v) => ['critical', 'serious'].includes(v.impact!))).toEqual([]);
   await page.keyboard.press('Escape');
   await catalogLink(page).click();
+  await expect(catalog(page)).toBeVisible();
+  // Mid fade-in the text is semi-transparent and axe would report a false contrast failure.
+  await settled(page);
   r = await new AxeBuilder({ page }).include('dialog[data-modal="catalog"]').analyze();
   expect(r.violations.filter((v) => ['critical', 'serious'].includes(v.impact!))).toEqual([]);
 });

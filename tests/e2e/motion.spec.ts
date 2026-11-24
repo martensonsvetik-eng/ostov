@@ -147,6 +147,16 @@ test('компьютер: параллакс фото в блоке 4 двига
   // Only transform is written inline (GSAP also resets the individual translate/rotate/scale to none).
   const inline = await img.evaluate((n) => [...(n as HTMLElement).style].filter((p) => !/^(transform|translate|rotate|scale)$/.test(p)));
   expect(inline).toEqual([]);
+
+  // Hero: the parallax is driven (inline transform written), yet at scrollY 0 the photo sits
+  // exactly where the layout puts it — identity transform, so the LCP image never jumps.
+  const hero = page.locator('.hero [data-parallax]');
+  await expect.poll(() => hero.evaluate((n) => (n as HTMLElement).style.transform), { timeout: 5000 }).not.toBe('');
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect
+    .poll(() => hero.evaluate((n) => new DOMMatrix(getComputedStyle(n).transform === 'none' ? '' : getComputedStyle(n).transform).isIdentity), { timeout: 5000 })
+    .toBe(true);
+  expect(await page.evaluate(() => scrollY)).toBe(0);
 });
 
 test('компьютер: при сужении окна параллакс снимается', async ({ page }, info) => {

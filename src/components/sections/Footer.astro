@@ -4,6 +4,8 @@
  * link instead of messenger logos (the brand is fictional, so no real accounts),
  * the questionnaire link, the data-policy stub (a <details>) and a visible concept
  * notice at body size, not small print.
+ * The logo is decorative here: the company line right below it already names the brand,
+ * so a labelled logo would be announced twice.
  */
 import { getDict, type Lang } from '../../i18n';
 import { logoPaths } from './logo-paths';
@@ -21,7 +23,7 @@ const tel = t.phone.replace(/[^+\d]/g, '');
 <footer class="footer on-dark">
   <div class="container footer__grid">
     <div class="footer__brand">
-      <svg class="footer__logo" width={logo.w} height="28" viewBox={`0 0 ${logo.w} 28`} fill="currentColor" role="img" aria-label={d.header.logo} focusable="false">
+      <svg class="footer__logo" width={logo.w} height="28" viewBox={`0 0 ${logo.w} 28`} fill="currentColor" aria-hidden="true" focusable="false">
         <path d={logo.d} />
       </svg>
       <p class="footer__company">{t.company}</p>

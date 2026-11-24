@@ -38,6 +38,10 @@ for (const L of LANGS) {
       await load(page, L.url);
       const footer = page.locator('footer');
       await expect(footer.getByText(L.concept)).toBeVisible();
+      // The brand is named once: the logo is decorative, the company line carries the name.
+      await expect(footer.locator('.footer__logo')).toHaveAttribute('aria-hidden', 'true');
+      await expect(footer.getByRole('img')).toHaveCount(0);
+      await expect(footer.locator('.footer__company')).toBeVisible();
       const fs = await footer.getByText(L.concept).evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
       expect(fs).toBeGreaterThanOrEqual(14);
       const msg = footer.locator('[data-messenger]');

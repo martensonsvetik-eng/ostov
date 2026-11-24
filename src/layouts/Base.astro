@@ -3,6 +3,12 @@ import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import Header from '../components/sections/Header.astro';
+import manropeLatin400 from '@fontsource/manrope/files/manrope-latin-400-normal.woff2?url';
+import manropeLatin500 from '@fontsource/manrope/files/manrope-latin-500-normal.woff2?url';
+import manropeCyr400 from '@fontsource/manrope/files/manrope-cyrillic-400-normal.woff2?url';
+import manropeCyr500 from '@fontsource/manrope/files/manrope-cyrillic-500-normal.woff2?url';
+import cormorantLatin500 from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url';
+import cormorantCyr500 from '@fontsource/cormorant-garamond/files/cormorant-garamond-cyrillic-500-normal.woff2?url';
 
 interface Props {
   lang: 'ru' | 'en';
@@ -17,6 +23,13 @@ const origin = Astro.site ? Astro.site.origin : '';
 const urls = { ru: `${origin}${base}/`, en: `${origin}${base}/en/` };
 const ogImage = `${origin}${base}/og-${lang}.jpg`;
 const ogAlt = lang === 'ru' ? 'ОСТОВ — кухни из массива и камня' : 'OSTOV — kitchens in solid wood and stone';
+// Faces the first screen sets (body 400, buttons/nav 500, H1 500), preloaded so they are ready at
+// the first layout. Without this, every face swaps in after first paint and each swap relayouts
+// and reshapes the page: on Lighthouse mobile that doubled Total Blocking Time (~265 → ~125 ms).
+// EN has no Cyrillic text, so it only needs the latin subsets.
+const fontPreloads = lang === 'ru'
+  ? [manropeCyr400, manropeLatin400, manropeCyr500, manropeLatin500, cormorantCyr500, cormorantLatin500]
+  : [manropeLatin400, manropeLatin500, cormorantLatin500];
 const skipLabel = lang === 'ru' ? 'Перейти к содержимому' : 'Skip to content';
 ---
 <!doctype html>
@@ -46,6 +59,7 @@ const skipLabel = lang === 'ru' ? 'Перейти к содержимому' : '
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <slot name="head" />
+    {fontPreloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
   </head>
   <body>
     <a class="skip-link" href="#main">{skipLabel}</a>

@@ -29,3 +29,15 @@
 | `src/assets/img/people/vera-lanskaya.jpg` | Блок 7, портрет архитектора (персонаж вымышлен) | TODO-asset: сгенерированный или стоковый портрет (brief.md §6), при замене отметить источник здесь |
 | `src/assets/img/projects/pines.jpg` (3:2) | Блок 5, главный проект «Дом у сосен» | TODO-asset: стоковое фото на утверждении (кандидаты — в отчёте Task 12) |
 | `src/assets/img/projects/patriarshy.jpg`, `jurmala.jpg`, `vasilievsky.jpg` (4:3) | Блок 5, карточки проектов | TODO-asset: стоковое фото на утверждении (кандидаты — в отчёте Task 12) |
+
+## Сгенерированная графика (без сторонних изображений)
+
+| Файл | Как получен | Лицензия исходников |
+|---|---|---|
+| `public/og-ru.jpg`, `public/og-en.jpg` (1200×630) | `node scripts/gen-og-images.mjs`: графитовый фон, знак ОСТОВ из `logo-paths.ts` и подзаголовок первого экрана, набранный Cormorant Garamond и переведённый в кривые | Cormorant Garamond — SIL OFL 1.1 |
+| `public/favicon.svg` | `node scripts/gen-favicon.mjs`: буква «О» Cormorant Garamond 600 в кривых на графитовом квадрате | Cormorant Garamond — SIL OFL 1.1 |
+| Знак ОСТОВ (шапка, подвал) | `node scripts/gen-logo-paths.mjs`: слово, набранное Cormorant Garamond и переведённое в кривые; не повторяет логотипы реальных брендов | Cormorant Garamond — SIL OFL 1.1 |
+
+## Сверка (Task 15)
+
+Все 19 файлов в `src/assets/img/` перечислены выше; в `public/` — только сгенерированная графика и `robots.txt`. Сторонних изображений, кроме `hero.jpg` (Unsplash License), на странице нет. Перед публикацией заменить заглушки TODO-asset и дописать источник каждого нового фото в эту таблицу.
