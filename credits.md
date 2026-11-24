@@ -6,9 +6,11 @@
 
 | Файл | Где | Источник | Автор | Лицензия |
 |---|---|---|---|---|
-| `src/assets/img/hero.jpg` | Блок 1, первый экран | Сгенерировано локально: `scripts/gen-hero-placeholder.mjs` (sharp, абстрактная композиция) | — | Собственная работа проекта |
+| `src/assets/img/hero.jpg` | Блок 1, первый экран | [Unsplash, VgyN_CWXQVM](https://unsplash.com/photos/modern-kitchen-with-island-and-large-window-VgyN_CWXQVM) | Cat Han ([@figmentprints](https://unsplash.com/@figmentprints)) | [Unsplash License](https://unsplash.com/license) |
 
-**TODO-asset: placeholder, replace with approved stock photo** — `src/assets/img/hero.jpg` временная заглушка. После согласования с заказчиком заменить на выбранное стоковое фото (кухня с островом, естественный свет, тёплое дерево и камень, без людей и логотипов), записать сюда автора, ссылку и лицензию, удалить эту пометку. Подготовка: кадр не уже 2400 px, 3:2; подпись `imageAlt` в `src/i18n/{ru,en}.ts` поправить под реальный кадр.
+**Обработка `hero.jpg`** (`scripts/prep-hero-photo.mjs`, оригинал 3840×2560):
+- размыт овальный значок производителя на дверце духовки (около x 2628, y 2178 в оригинале), потому что ТЗ запрещает реальные логотипы брендов. Других знаков и надписей в кадре нет: проверены вытяжка, ручки плиты и посудомоечная машина;
+- уменьшено до 3200×2133, JPEG q85 (исходник для `astro:assets`).
 
 ## Шрифты
 

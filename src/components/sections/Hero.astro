@@ -122,8 +122,9 @@ const { sources, img } = await getHeroImage();
   }
   .hero__scrim--lower {
     --a: var(--scrim-lower);
-    /* Starts its fade inside the H1's descender space, solid from the subtitle down. */
-    --f: clamp(2.5rem, 2rem + 1.5vw, 3.5rem);
+    /* Solid from the subtitle down; fades up across the whole H1 (≈ two lines) so the
+       step between the two layers reads as a gradient, not a band. Over the H1 it only adds. */
+    --f: clamp(6rem, 4.5rem + 4vw, 10rem);
     grid-area: 2 / 1;
   }
 

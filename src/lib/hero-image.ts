@@ -1,6 +1,6 @@
 /**
  * First-screen photo, art-directed (brief.md §6, «Изображения»):
- * - phones (≤767 px): a 3:5 portrait crop, so a ~390×780 hero does not pull a
+ * - phones (≤767 px): a 3:5 portrait crop (anchored left), so a ~390×780 hero does not pull a
  *   landscape file three times wider than the screen;
  * - wider screens: the full 3:2 frame.
  * Built with astro:assets getImage (not <Picture>) because <Picture> has no
@@ -13,10 +13,13 @@ export const HERO_MOBILE_MEDIA = '(max-width: 767px)';
 // `sizes`: the photo is object-fit: cover in a hero ≈ one screen tall. On screens narrower
 // than the frame (wide: below 3:2, e.g. a 1024×768 tablet) it renders wider than 100vw.
 // Phones keep 100vw to stay inside the 200 KB budget; the 3:5 crop is close to their shape.
-const MOBILE = { width: 960, height: 1600, widths: [480, 640, 800, 960], sizes: '100vw' };
-const WIDE = { width: 2400, height: 1600, widths: [1024, 1280, 1600, 1920, 2400], sizes: '(max-aspect-ratio: 3/2) 150vh, 100vw' };
+// Phone crop anchored left: keeps the island, the stool and the left half of the window
+// (palm) — centre would cut to plain cabinets and the range.
+const MOBILE = { width: 960, height: 1600, widths: [480, 640, 800, 960], sizes: '100vw', position: 'left' };
+const WIDE = { width: 2400, height: 1600, widths: [1024, 1280, 1600, 1920, 2400], sizes: '(max-aspect-ratio: 3/2) 150vh, 100vw', position: 'center' };
 const FORMATS = ['avif', 'webp', 'jpeg'] as const;
-const QUALITY = { avif: 55, webp: 70, jpeg: 72 } as const;
+// JPEG is only the fallback for browsers without AVIF/WebP; q60 keeps even the 2400w file within 350 KB.
+const QUALITY = { avif: 55, webp: 70, jpeg: 60 } as const;
 
 type Format = (typeof FORMATS)[number];
 type Variant = typeof MOBILE;
@@ -38,7 +41,7 @@ function variant(v: Variant, format: Format) {
     height: v.height,
     widths: v.widths,
     fit: 'cover',
-    position: 'center',
+    position: v.position,
     quality: QUALITY[format],
   });
 }

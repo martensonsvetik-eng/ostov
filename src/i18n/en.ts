@@ -30,7 +30,7 @@ export const en: Dict = {
     subtitle: 'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
     cta: 'Discuss your project',
     secondary: 'See projects',
-    imageAlt: 'A kitchen with an oak and travertine island in natural light',
+    imageAlt: 'A light kitchen with a white island and a large window onto the garden, in warm afternoon sun',
   },
   facts: {
     label: 'The workshop at a glance',
