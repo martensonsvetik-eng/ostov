@@ -252,9 +252,9 @@ export const en: Dict = {
       budget: {
         label: 'Budget',
         options: {
-          upTo3: 'Up to 3 million ₽',
-          from3to6: '3–6 million ₽',
-          over6: 'More than 6 million ₽',
+          upTo3: 'Up to €31 000',
+          from3to6: '€31 000–63 000',
+          over6: 'More than €63 000',
           unknown: 'Not sure yet',
         },
       },

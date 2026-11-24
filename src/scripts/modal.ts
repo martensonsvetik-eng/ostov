@@ -23,7 +23,7 @@ function focusables(dialog: HTMLDialogElement): HTMLElement[] {
 
 export function openModal(id: ModalId, opener: HTMLElement): void {
   const dialog = dialogOf(id);
-  if (!dialog) return; // e.g. the questionnaire before Task 11 ships it
+  if (!dialog) return;
   if (current) closeModal();
   current = { dialog, opener };
   document.documentElement.classList.add('modal-open');

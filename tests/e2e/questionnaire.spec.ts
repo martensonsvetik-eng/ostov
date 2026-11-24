@@ -471,6 +471,18 @@ test('EN: анкета переведена', async ({ page }) => {
   await d.getByRole('button', { name: 'Next' }).click();
   await expect(d.locator('[data-q-progress]')).toHaveText('Step 2 of 5');
   await expect(d.getByRole('button', { name: 'Back' })).toBeVisible();
+  // step 4: one currency — budget options in € like the price range above them
+  await d.getByRole('radio', { name: /Warm modern/i }).check();
+  await d.getByRole('button', { name: 'Next' }).click();
+  await d.getByRole('button', { name: 'Next' }).click();
+  await expect(d.locator('[data-q-progress]')).toHaveText('Step 4 of 5');
+  const budget = (await d.locator('[data-q-step="4"] [name="budget"]').evaluateAll((els) =>
+    els.map((e) => (e as HTMLInputElement).labels![0]!.textContent!.trim()),
+  ));
+  expect(budget).toEqual(['Up to €31 000', '€31 000–63 000', 'More than €63 000', 'Not sure yet']);
+  for (const t of budget) expect(t).not.toContain('₽');
+  await expect(d.locator('[data-q-step="4"]')).not.toContainText('₽');
+  await expect(d.locator('[data-q-step="4"]')).toContainText('€');
 });
 
 test.describe('без JavaScript', () => {
