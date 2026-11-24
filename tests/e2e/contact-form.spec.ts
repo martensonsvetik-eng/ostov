@@ -142,6 +142,14 @@ test('отправка с ошибками: сводка сверху и фок�
   await expect(f.locator('[data-error-for="consent"]')).toHaveText('Нужно согласие на обработку данных');
   await expect(f).toHaveAttribute('data-state', 'idle');
   await expect(f).not.toHaveAttribute('data-submit-count', /[1-9]/);
+  // каждая ссылка сводки — зона нажатия не меньше 44×44
+  const links = summary.getByRole('link');
+  await expect(links).toHaveCount(2);
+  for (const link of await links.all()) {
+    const box = (await link.boundingBox())!;
+    expect(box.height).toBeGreaterThanOrEqual(44);
+    expect(box.width).toBeGreaterThanOrEqual(44);
+  }
   // ссылка в сводке ведёт к полю, адрес не меняется
   const url = page.url();
   await summary.getByRole('link', { name: /Согласен на обработку данных/ }).click();
