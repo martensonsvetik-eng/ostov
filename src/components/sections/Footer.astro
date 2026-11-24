@@ -1,0 +1,147 @@
+---
+/**
+ * Подвал (brief.md §5): fictional company, address, phone, e-mail, a neutral «chat»
+ * link instead of messenger logos (the brand is fictional, so no real accounts),
+ * the questionnaire link, the data-policy stub (a <details>) and a visible concept
+ * notice at body size, not small print.
+ */
+import { getDict, type Lang } from '../../i18n';
+import { logoPaths } from './logo-paths';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const d = getDict(lang);
+const t = d.footer;
+const logo = logoPaths[lang];
+const tel = t.phone.replace(/[^+\d]/g, '');
+---
+<footer class="footer on-dark">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <svg class="footer__logo" width={logo.w} height="28" viewBox={`0 0 ${logo.w} 28`} fill="currentColor" role="img" aria-label={d.header.logo} focusable="false">
+        <path d={logo.d} />
+      </svg>
+      <p class="footer__company">{t.company}</p>
+    </div>
+
+    <address class="footer__contacts">
+      <p>{t.address}</p>
+      <p><a href={`tel:${tel}`}>{t.phone}</a></p>
+      <p><a href={`mailto:${t.email}`}>{t.email}</a></p>
+      <p>
+        <a href="#contact" data-messenger>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+            <path d="M3 4.5h14v9H8.5L5 16.5v-3H3z" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round" />
+          </svg>
+          <span>{t.messenger}</span>
+        </a>
+      </p>
+    </address>
+
+    <div class="footer__links">
+      <Button variant="link" data-open-modal="questionnaire" aria-haspopup="dialog">{t.prepare}</Button>
+      <details id="policy" class="footer__policy">
+        <summary>{t.policy}</summary>
+        <p>{t.policyText}</p>
+      </details>
+    </div>
+
+    <p class="footer__concept">{t.concept}</p>
+  </div>
+</footer>
+
+<script>
+  // A «#policy» link opens the stub paragraph.
+  const openPolicy = () => {
+    const el = document.getElementById('policy');
+    if (el instanceof HTMLDetailsElement && location.hash === '#policy') el.open = true;
+  };
+  openPolicy();
+  window.addEventListener('hashchange', openPolicy);
+</script>
+
+<style>
+  .footer {
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem);
+    border-top: 1px solid var(--c-hairline);
+  }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem var(--grid-gap);
+  }
+  .footer__logo {
+    display: block;
+    height: 1.75rem;
+    width: auto;
+    color: var(--c-text);
+  }
+  .footer__company {
+    margin-top: 0.75rem;
+    color: var(--c-muted);
+  }
+  .footer__contacts {
+    font-style: normal;
+  }
+  .footer__contacts p {
+    margin: 0;
+  }
+  .footer__contacts p:first-child {
+    padding-block: 0.6rem;
+  }
+  .footer__contacts a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--hit);
+    color: var(--c-link);
+  }
+  .footer__links {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    gap: 0.5rem;
+  }
+  .footer__policy summary {
+    display: flex;
+    align-items: center;
+    min-height: var(--hit);
+    color: var(--c-link);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+  .footer__policy p {
+    max-width: 32rem;
+    padding-block: 0.5rem 1rem;
+    color: var(--c-muted);
+  }
+  .footer__concept {
+    max-width: 44rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-hairline);
+    color: var(--c-muted);
+  }
+
+  @media (min-width: 1024px) {
+    .footer__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .footer__brand {
+      grid-column: 1 / span 4;
+    }
+    .footer__contacts {
+      grid-column: 5 / span 4;
+    }
+    .footer__links {
+      grid-column: 9 / -1;
+    }
+    .footer__concept {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -325,4 +325,9 @@ export const en: Dict = {
     concept:
       'Concept project for a portfolio. The brand, people and projects are fictional. The form does not send data',
   },
+  notFound: {
+    title: 'Page not found',
+    text: 'This page does not exist. The link may be out of date.',
+    home: 'Back to the home page',
+  },
 };

@@ -1,0 +1,44 @@
+---
+/**
+ * 404: Base layout without the header (its anchors point at sections that are not
+ * here), a heading, one sentence and a way home. A static host serves one 404 for every
+ * path, so the Russian default is shown with an English line and link below.
+ */
+import Base from '../layouts/Base.astro';
+import { getDict } from '../i18n';
+const ru = getDict('ru').notFound;
+const en = getDict('en').notFound;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base lang="ru" title={ru.title} description={ru.text} header={false}>
+  <section class="section nf">
+    <div class="container">
+      <h1>{ru.title}</h1>
+      <p>{ru.text}</p>
+      <p><a class="nf__link" href={`${base}/`}>{ru.home}</a></p>
+      <p class="nf__en" lang="en">{en.text} <a class="nf__link" href={`${base}/en/`}>{en.home}</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 70vh;
+  }
+  .nf h1 {
+    margin-bottom: 1.5rem;
+  }
+  .nf p {
+    margin-bottom: 1rem;
+  }
+  .nf__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--hit);
+    color: var(--c-link);
+  }
+  .nf__en {
+    margin-top: 2.5rem;
+    color: var(--c-muted);
+  }
+</style>

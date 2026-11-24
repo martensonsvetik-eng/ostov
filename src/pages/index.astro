@@ -7,16 +7,18 @@ import Collections from '../components/sections/Collections.astro';
 import Materials from '../components/sections/Materials.astro';
 import Projects from '../components/sections/Projects.astro';
 import Process from '../components/sections/Process.astro';
-import SectionStubs from '../components/sections/SectionStubs.astro';
+import Pro from '../components/sections/Pro.astro';
 import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/sections/Footer.astro';
 import Modal from '../components/ui/Modal.astro';
 import CatalogForm from '../components/forms/CatalogForm.astro';
 import SamplesForm from '../components/forms/SamplesForm.astro';
 import Questionnaire from '../components/forms/Questionnaire.astro';
 import { getDict } from '../i18n';
-const forms = getDict('ru').forms;
+const dict = getDict('ru');
+const forms = dict.forms;
 ---
-<Base lang="ru" title="ОСТОВ" description="ОСТОВ — кухни, собранные вокруг вас.">
+<Base lang="ru" title={dict.meta.title} description={dict.meta.description}>
   <HeroPreload slot="head" />
   <Hero lang="ru" />
   <Facts lang="ru" />
@@ -25,7 +27,7 @@ const forms = getDict('ru').forms;
   <Projects lang="ru" />
   <Process lang="ru" />
   <Contact lang="ru" />
-  <SectionStubs lang="ru" only={['pro']} />
+  <Pro lang="ru" />
   <Modal id="catalog" lang="ru" size="sm" title={forms.catalog.title}>
     <CatalogForm lang="ru" labelledby="modal-catalog-title" />
   </Modal>
@@ -35,4 +37,5 @@ const forms = getDict('ru').forms;
   <Modal id="questionnaire" lang="ru" title={forms.questionnaire.title}>
     <Questionnaire lang="ru" labelledby="modal-questionnaire-title" />
   </Modal>
+  <Footer lang="ru" slot="after-main" />
 </Base>

@@ -143,4 +143,5 @@ export interface Dict {
     policyText: string;
     concept: string;
   };
+  notFound: { title: string; text: string; home: string };
 }

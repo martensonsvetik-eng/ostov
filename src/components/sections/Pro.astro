@@ -1,0 +1,115 @@
+---
+/**
+ * Блок 8 — «Для архитекторов и дизайнеров» (brief.md §5): four terms, the main button
+ * (scrolls to the contact form and preselects «Архитектор / дизайнер») and two text
+ * links that open the samples and catalogue modals. Dark section, like the footer.
+ * Without JS the button is a plain #contact anchor; the modal links are hidden by Modal.astro.
+ */
+import Button from '../ui/Button.astro';
+import { getDict, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const t = getDict(Astro.props.lang).pro;
+const keys = ['0', '1', '2', '3'] as const;
+---
+<section id="pro" class="section pro on-dark" aria-labelledby="pro-title">
+  <div class="container pro__grid">
+    <h2 id="pro-title" class="pro__title">{t.title}</h2>
+
+    <ul class="pro__list" role="list">
+      {keys.map((k, i) => (
+        <li class="pro__item">
+          <span class="pro__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="pro__text">{t.items[k]}</span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="pro__actions">
+      <Button variant="primary" href="#contact" data-pro-cta>{t.cta}</Button>
+      <div class="pro__links">
+        <Button variant="link" data-open-modal="samples" aria-haspopup="dialog">{t.samplesLink}</Button>
+        <Button variant="link" data-open-modal="catalog" aria-haspopup="dialog">{t.catalogLink}</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Preselect «Архитектор / дизайнер»; the anchor itself scrolls (smooth unless reduced motion, global.css).
+  // Focus goes to the contact heading so keyboard and screen-reader users land at the section start.
+  document.querySelector<HTMLAnchorElement>('[data-pro-cta]')?.addEventListener('click', () => {
+    const who = document.querySelector<HTMLInputElement>('#contact input[name="who"][value="pro"]');
+    if (who && !who.checked) {
+      who.checked = true;
+      who.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    const heading = document.getElementById('contact-title');
+    if (heading) {
+      heading.setAttribute('tabindex', '-1');
+      heading.focus({ preventScroll: true });
+    }
+  });
+</script>
+
+<style>
+  .pro__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem var(--grid-gap);
+  }
+  .pro__title {
+    max-width: 12em;
+  }
+  .pro__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--c-hairline);
+  }
+  .pro__item {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+  .pro__num {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--c-link);
+  }
+  .pro__text {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.4;
+  }
+  .pro__actions {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+  .pro__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .pro__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      row-gap: 3rem;
+    }
+    .pro__title {
+      grid-column: 1 / span 5;
+    }
+    .pro__list {
+      grid-column: 7 / -1;
+    }
+    .pro__actions {
+      grid-column: 7 / -1;
+    }
+  }
+</style>

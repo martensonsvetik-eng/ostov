@@ -364,8 +364,8 @@ test.describe('без JavaScript', () => {
 
   test('ссылки окон скрыты, окна закрыты; даже открытое вручную окно каталога не меняет адрес по Enter', async ({ page }) => {
     await page.goto('/ostov/');
-    await expect(page.locator('[data-open-modal="catalog"]')).toBeHidden();
-    await expect(page.locator('[data-open-modal="samples"]')).toBeHidden();
+    await expect(page.locator('[data-open-modal="catalog"]:visible')).toHaveCount(0);
+    await expect(page.locator('[data-open-modal="samples"]:visible')).toHaveCount(0);
     await expect(page.locator('dialog[data-modal="catalog"]')).toBeHidden();
     await expect(page.locator('dialog[data-modal="samples"]')).toBeHidden();
     const url = page.url();

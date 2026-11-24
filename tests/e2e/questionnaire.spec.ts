@@ -83,14 +83,6 @@ test('открывается кнопкой «Подготовить проек�
 
 test('открывается ссылкой из подвала (любой триггер data-open-modal="questionnaire")', async ({ page }) => {
   await load(page);
-  // Подвал собирается в задаче 13; пока его нет — ставим ссылку так, как она будет в подвале.
-  if ((await page.locator('footer [data-open-modal="questionnaire"]').count()) === 0) {
-    await page.evaluate(() => {
-      const f = document.createElement('footer');
-      f.innerHTML = '<a href="#" data-open-modal="questionnaire" aria-haspopup="dialog">Подготовить проект заранее</a>';
-      document.body.append(f);
-    });
-  }
   const link = page.locator('footer [data-open-modal="questionnaire"]').first();
   await link.click();
   await expect(dialog(page)).toBeVisible();
@@ -489,7 +481,7 @@ test.describe('без JavaScript', () => {
   test.use({ javaScriptEnabled: false });
   test('кнопка анкеты скрыта, окно закрыто', async ({ page }) => {
     await page.goto('/ostov/');
-    await expect(page.locator('[data-open-modal="questionnaire"]')).toBeHidden();
+    await expect(page.locator('[data-open-modal="questionnaire"]:visible')).toHaveCount(0);
     await expect(page.locator('dialog[data-modal="questionnaire"]')).toBeHidden();
   });
 });
