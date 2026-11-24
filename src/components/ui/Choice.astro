@@ -20,6 +20,8 @@ interface Props {
   inline?: boolean;
   /** Id prefix for options and messages; set it when two forms on a page share a field name. */
   id?: string;
+  /** Legend for screen readers only, when a visible heading right above already names the group. */
+  legendHidden?: boolean;
 }
 
 const {
@@ -33,6 +35,7 @@ const {
   error,
   inline = false,
   id,
+  legendHidden = false,
 } = Astro.props;
 
 const base = id ?? `c-${name}`;
@@ -41,7 +44,7 @@ const errorId = `${base}-error`;
 const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(' ') || undefined;
 ---
 <fieldset class:list={['choice', { 'choice--inline': inline, 'choice--invalid': error }]} aria-describedby={describedBy}>
-  <legend class="choice__legend">{legend}</legend>
+  <legend class:list={['choice__legend', { 'visually-hidden': legendHidden }]}>{legend}</legend>
   {hint && <p class="choice__hint" id={hintId}>{hint}</p>}
   <div class="choice__options">
     {

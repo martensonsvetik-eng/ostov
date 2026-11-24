@@ -10,6 +10,7 @@ import Contact from '../../components/sections/Contact.astro';
 import Modal from '../../components/ui/Modal.astro';
 import CatalogForm from '../../components/forms/CatalogForm.astro';
 import SamplesForm from '../../components/forms/SamplesForm.astro';
+import Questionnaire from '../../components/forms/Questionnaire.astro';
 import { getDict } from '../../i18n';
 const forms = getDict('en').forms;
 ---
@@ -27,5 +28,8 @@ const forms = getDict('en').forms;
   </Modal>
   <Modal id="samples" lang="en" title={forms.samples.title}>
     <SamplesForm lang="en" labelledby="modal-samples-title" />
+  </Modal>
+  <Modal id="questionnaire" lang="en" title={forms.questionnaire.title}>
+    <Questionnaire lang="en" labelledby="modal-questionnaire-title" />
   </Modal>
 </Base>

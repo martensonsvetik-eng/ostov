@@ -48,3 +48,20 @@ test('ключ черновика ostov:questionnaire, массивы сохра
   expect(sessionStorage.getItem('ostov:questionnaire')).toBe(JSON.stringify({ rooms: ['a', 'b'] }));
   expect(loadDraft()).toEqual({ rooms: ['a', 'b'] });
 });
+
+test('черновик: исключения хранилища (квота, SecurityError) не ломают форму', () => {
+  const quota = new DOMException('full', 'QuotaExceededError');
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw quota; });
+  vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new DOMException('denied', 'SecurityError'); });
+  vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => { throw new DOMException('denied', 'SecurityError'); });
+  expect(() => saveDraft({ object: 'house' })).not.toThrow();
+  expect(loadDraft()).toBeNull();
+  expect(() => clearDraft()).not.toThrow();
+});
+
+test('черновик: доступ к самому sessionStorage бросает — функции не падают', () => {
+  vi.spyOn(globalThis, 'sessionStorage', 'get').mockImplementation(() => { throw new DOMException('denied', 'SecurityError'); });
+  expect(() => saveDraft({ object: 'house' })).not.toThrow();
+  expect(loadDraft()).toBeNull();
+  expect(() => clearDraft()).not.toThrow();
+});

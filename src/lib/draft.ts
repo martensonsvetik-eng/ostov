@@ -1,30 +1,44 @@
 /**
  * Questionnaire draft stored in sessionStorage only (never localStorage or network).
+ * Storage can throw (quota exceeded, SecurityError when storage is blocked, even on
+ * reading the `sessionStorage` property itself): every call is guarded, so a broken
+ * storage only means "no draft" and never breaks the form.
  */
 export type DraftData = Record<string, string | string[]>;
 
 const KEY = 'ostov:questionnaire';
 
 function storage(): Storage | null {
-  return typeof sessionStorage === 'undefined' ? null : sessionStorage;
+  try {
+    return typeof sessionStorage === 'undefined' ? null : sessionStorage;
+  } catch {
+    return null;
+  }
 }
 
 export function saveDraft(data: DraftData): void {
-  storage()?.setItem(KEY, JSON.stringify(data));
+  try {
+    storage()?.setItem(KEY, JSON.stringify(data));
+  } catch {
+    /* no draft this time */
+  }
 }
 
 export function loadDraft(): DraftData | null {
-  const store = storage();
-  if (!store) return null;
-  const raw = store.getItem(KEY);
-  if (raw === null) return null;
   try {
-    return JSON.parse(raw) as DraftData;
+    const raw = storage()?.getItem(KEY) ?? null;
+    if (raw === null) return null;
+    const data: unknown = JSON.parse(raw);
+    return data && typeof data === 'object' && !Array.isArray(data) ? (data as DraftData) : null;
   } catch {
     return null;
   }
 }
 
 export function clearDraft(): void {
-  storage()?.removeItem(KEY);
+  try {
+    storage()?.removeItem(KEY);
+  } catch {
+    /* nothing to clear */
+  }
 }
