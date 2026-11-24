@@ -13,9 +13,9 @@ async function open(page: Page, query = '') {
   // far above could otherwise start loading mid-test and be counted as a form request.
   await page.evaluate(() =>
     Promise.all(
-      [...document.images].map((img) => {
+      [...document.images].map(async (img) => {
         img.loading = 'eager';
-        return img.decode().catch(() => undefined);
+        await img.decode().catch(() => undefined);
       }),
     ),
   );

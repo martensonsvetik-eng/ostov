@@ -13,9 +13,9 @@ async function load(page: Page, url = '/ostov/') {
   // Every lazy image loads up front, so later request counts see only what the forms do.
   await page.evaluate(() =>
     Promise.all(
-      [...document.images].map((img) => {
+      [...document.images].map(async (img) => {
         img.loading = 'eager';
-        return img.decode().catch(() => undefined);
+        await img.decode().catch(() => undefined);
       }),
     ),
   );
