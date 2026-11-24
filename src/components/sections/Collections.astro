@@ -146,6 +146,29 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
     overflow: hidden;
     background: var(--c-hairline);
   }
+  /* Hover / keyboard focus (client round 2): a graphite veil fades in over the photo.
+     Only opacity animates; the text sits below the photo, so its contrast is untouched. */
+  .collection__media {
+    position: relative;
+  }
+  .collection__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--c-dark);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .collection:hover .collection__media::after {
+      opacity: 0.3;
+    }
+  }
+  /* Keyboard only: a mouse click on «Подробнее» must not leave the photo veiled. */
+  .collection:has(:focus-visible) .collection__media::after {
+    opacity: 0.3;
+  }
   .collection__media :global(img),
   .collection__photos :global(img) {
     width: 100%;
@@ -279,6 +302,9 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
   @media (prefers-reduced-motion: reduce) {
     :global(html.js) .collection__panel:not([hidden]) .collection__panel-inner {
       animation: none;
+    }
+    .collection__media::after {
+      transition: none;
     }
   }
 </style>

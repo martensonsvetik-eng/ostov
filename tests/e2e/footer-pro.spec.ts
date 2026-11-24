@@ -3,8 +3,8 @@ import { test, expect, type Page } from '@playwright/test';
 /** Блок 8 «Для архитекторов и дизайнеров», подвал, 404, мета для соцсетей (task 13). */
 
 const LANGS = [
-  { lang: 'ru', url: '/ostov/', cta: 'Получить доступ к библиотеке', pro: 'Архитектор / дизайнер', concept: /Концептуальный проект для портфолио/, home: '/ostov/' },
-  { lang: 'en', url: '/ostov/en/', cta: 'Get access to the library', pro: 'Architect / designer', concept: /Concept project for a portfolio/, home: '/ostov/en/' },
+  { lang: 'ru', url: '/ostov/', cta: 'Получить доступ к библиотеке', pro: 'Архитектор / дизайнер', rights: '© 2026 ООО «Остов». Все права защищены.', address: 'Москва, Камнерезный проезд, 4', bad: /концепт|вымышл|демо|демонстрац|заглушк/i, home: '/ostov/' },
+  { lang: 'en', url: '/ostov/en/', cta: 'Get access to the library', pro: 'Architect / designer', rights: '© 2026 Ostov LLC. All rights reserved.', address: 'Moscow, 4 Kamnereznyy proezd', bad: /concept|fictional|demo|placeholder/i, home: '/ostov/en/' },
 ];
 
 async function load(page: Page, url: string) {
@@ -34,15 +34,22 @@ for (const L of LANGS) {
       await expect(page.locator('dialog[data-modal="catalog"]')).toBeVisible();
     });
 
-    test('подвал: пометка о концепте видна, мессенджеры без логотипов, анкета открывается', async ({ page }) => {
+    test('подвал: строка © и реквизиты, без пометок о концепте; мессенджеры без логотипов, анкета открывается', async ({ page }) => {
       await load(page, L.url);
       const footer = page.locator('footer');
-      await expect(footer.getByText(L.concept)).toBeVisible();
-      // The brand is named once: the logo is decorative, the company line carries the name.
+      await expect(footer.getByText(L.rights, { exact: true })).toBeVisible();
+      await expect(footer).toContainText(L.address);
+      await expect(footer).toContainText('+7 (495) 000-00-00');
+      await expect(footer.locator('a[href^="tel:"]')).toHaveAttribute('href', 'tel:+74950000000');
+      await footer.locator('#policy summary').click();
+      await expect(footer.locator('#policy p')).toContainText('hello@ostov.example');
+      // Решение заказчика 2026-11-24: никаких видимых пометок о демо и концепте на странице.
+      expect(await page.locator('body').innerText()).not.toMatch(L.bad);
+      // The brand is named once: the logo is decorative, the rights line carries the name.
       await expect(footer.locator('.footer__logo')).toHaveAttribute('aria-hidden', 'true');
       await expect(footer.getByRole('img')).toHaveCount(0);
       await expect(footer.locator('.footer__company')).toBeVisible();
-      const fs = await footer.getByText(L.concept).evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+      const fs = await footer.getByText(L.rights, { exact: true }).evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
       expect(fs).toBeGreaterThanOrEqual(14);
       const msg = footer.locator('[data-messenger]');
       expect(await msg.count()).toBeGreaterThan(0);

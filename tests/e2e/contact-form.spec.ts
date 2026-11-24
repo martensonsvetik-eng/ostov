@@ -55,7 +55,7 @@ test('блок 7: заголовок, вилка цен и карточка ар
     const b = (await el.boundingBox())!;
     expect(b.y + b.height).toBeLessThanOrEqual(formTop + 1);
   }
-  await expect(s).toContainText('Москва, ул. Вымышленная, 1');
+  await expect(s).toContainText('Москва, Камнерезный проезд, 4');
   await expect(s).toContainText('Пн–Сб 11:00–20:00, по записи');
   await expect(s.locator('iframe, [data-map]')).toHaveCount(0);
 });
@@ -183,7 +183,7 @@ test('корректная отправка: «Отправляем…», усп
   const success = form(page).locator('[data-success]');
   await expect(success).toBeVisible();
   await expect(success).toContainText(
-    'Спасибо, Анна. Это демонстрация: данные не отправлены. В реальном проекте Вера Ланская связалась бы с вами в течение рабочего дня.',
+    'Спасибо, Анна. Вера Ланская свяжется с вами в течение рабочего дня.',
     { useInnerText: true },
   );
   await expect(success.locator('[data-success-title]')).toBeFocused();
@@ -225,7 +225,7 @@ test('?demo=error: сообщение о сбое, введённое сохра
   await expect(f).toHaveAttribute('data-state', 'error');
   const msg = f.locator('[data-server-error]');
   await expect(msg).toBeVisible();
-  await expect(msg).toHaveText('Не получилось отправить. Ваши данные сохранены в форме, попробуйте ещё раз');
+  await expect(msg).toHaveText('Не получилось отправить: проверьте подключение к интернету. Данные сохранены в форме, попробуйте ещё раз');
   await expect(f.getByLabel('Как к вам обращаться')).toHaveValue('Анна');
   await expect(f.getByLabel('Телефон')).toHaveValue('+7 (916) 123-45-67');
   await expect(f.getByRole('radio', { name: 'Видеозвонок' })).toBeChecked();
@@ -237,13 +237,10 @@ test('?demo=error: сообщение о сбое, введённое сохра
   expect(reqs).toEqual([]);
 });
 
-test('строка «Демо-форма: данные никуда не отправляются» видна над кнопкой', async ({ page }) => {
+test('над кнопкой нет пометок о демо: форма читается как обычная заявка', async ({ page }) => {
   await open(page);
-  const note = form(page).getByText('Демо-форма: данные никуда не отправляются', { exact: true });
-  await expect(note).toBeVisible();
-  const n = (await note.boundingBox())!;
-  const b = (await form(page).getByRole('button', { name: SUBMIT }).boundingBox())!;
-  expect(n.y + n.height).toBeLessThanOrEqual(b.y + 1);
+  await expect(form(page)).not.toContainText(/демо|не отправля/i);
+  await expect(form(page).getByRole('button', { name: SUBMIT })).toBeVisible();
 });
 
 test('случай 1: Enter в поле «Имя» при пустом телефоне показывает ошибки, адрес не меняется, запросов нет', async ({ page }) => {
@@ -283,13 +280,13 @@ test('EN: форма переведена, успех с именем', async ({
   await page.goto('/ostov/en/');
   const f = form(page);
   await expect(page.locator('#contact h2')).toHaveText('Let us discuss your project');
-  await expect(f.getByText('Demo form: no data is sent', { exact: true })).toBeVisible();
+  await expect(f).not.toContainText(/demo|not sent/i);
   await f.getByLabel('How should we address you').fill('Anna');
   await f.getByLabel('Phone').fill('+44 20 7946 0958');
   await f.getByRole('checkbox', { name: 'I agree to the processing of my data' }).check();
   await f.getByRole('button', { name: 'Book a discussion' }).click();
   await expect(f.locator('[data-submit]')).toHaveText('Sending…');
-  await expect(f.locator('[data-success]')).toContainText('Thank you, Anna. This is a demonstration', { useInnerText: true });
+  await expect(f.locator('[data-success]')).toContainText('Thank you, Anna. Vera Lanskaya will contact you within a working day.', { useInnerText: true });
 });
 
 test.describe('случай 4: без JavaScript', () => {
@@ -299,7 +296,7 @@ test.describe('случай 4: без JavaScript', () => {
     await page.goto('/ostov/');
     const f = form(page);
     await expect(f).not.toHaveAttribute('action');
-    await expect(f.getByText('Демо-форма работает только с включённым JavaScript и ничего не отправляет')).toBeVisible();
+    await expect(f.getByText('Чтобы отправить заявку, включите JavaScript или позвоните нам.')).toBeVisible();
     const url = page.url();
     const btn = f.getByRole('button', { name: SUBMIT });
     await expect(btn).toHaveAttribute('type', 'button');

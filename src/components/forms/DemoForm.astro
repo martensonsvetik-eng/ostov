@@ -1,8 +1,8 @@
 ---
 /**
  * Shared shell of every demo form (brief.md §8): error summary on top, fields (default
- * slot), foot with the server-error message, notes and the demo line above the
- * buttons, and the success block. Sends nothing: no action, the submit button is
+ * slot), foot with the server-error message and notes above the buttons, and the
+ * success block. Sends nothing: no action, the submit button is
  * type="button" until src/scripts/form.ts takes over (then type="submit" with submit
  * always prevented). All states live in this markup; the script only toggles them
  * through the data-* hooks documented in form.ts.
@@ -20,7 +20,7 @@ type Props = Omit<HTMLAttributes<'form'>, 'action'> & {
   title?: string;
   titleId?: string;
   submit: string;
-  /** Extra caption above the demo line (e.g. «Образцы привозим за 5 рабочих дней»). */
+  /** Extra caption above the buttons (e.g. «Образцы привозим за 5 рабочих дней»). */
   note?: string;
   successText: string;
   /** No card frame: for forms inside a modal. */
@@ -60,7 +60,6 @@ const f = getDict(lang).forms;
       </p>
       <div class="dform__notes">
         {note && <p class="dform__note dform__note--lead">{note}</p>}
-        <p class="dform__note">{f.demoNote}</p>
         <!-- No-JS notice: shown until the inline html.js flag (Base.astro) hides it. A <noscript>
              would do the same in browsers, but its content is not rendered as markup when
              scripting is disabled by automation, so the html.js pattern (as in Header) is used. -->

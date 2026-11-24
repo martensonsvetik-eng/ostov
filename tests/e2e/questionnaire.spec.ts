@@ -187,7 +187,7 @@ test('шаг 4: над вариантами бюджета видна вилка
 
 test('шаг 5: те же поля, что в 8.1; загрузки файла нет — текст про план', async ({ page }) => {
   const d = await openQ(page);
-  await expect(d.getByText('В реальном проекте здесь можно приложить план', { exact: false })).toBeVisible();
+  await expect(d.getByText('План помещения можно будет передать архитектору после первого звонка.', { exact: true })).toBeVisible();
   await expect(d.locator('input[type="file"]')).toHaveCount(0);
   await walkTo5(d);
   await expect(d.getByRole('heading', { name: 'Контакты' })).toBeFocused();
@@ -203,7 +203,7 @@ test('шаг 5: те же поля, что в 8.1; загрузки файла �
   await expect(back(d)).toBeVisible();
   const submit = d.getByRole('button', { name: 'Отправить анкету' });
   await expect(submit).toHaveAttribute('type', 'submit');
-  await expect(d.getByText('Демо-форма: данные никуда не отправляются', { exact: true })).toBeVisible();
+  await expect(d.locator('form')).not.toContainText(/демо|не отправля/i);
   const sizes = await d.locator('input.field__input').evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).fontSize)));
   expect(sizes.length).toBeGreaterThan(0);
   for (const s of sizes) expect(s).toBeGreaterThanOrEqual(16);
@@ -296,7 +296,7 @@ test('успех: «Спасибо, {name}.», sessionStorage[ostov:questionnair
   const success = d.locator('[data-success]');
   await expect(success).toBeVisible();
   await expect(success.locator('[data-success-title]')).toHaveText('Спасибо, $&Анна.');
-  await expect(success).toContainText('Это демонстрация: данные не отправлены.');
+  await expect(success).toContainText('Вера Ланская свяжется с вами в течение рабочего дня.');
   await expect(success.locator('[data-success-title]')).toBeFocused();
   await expect(progress(d)).toBeHidden();
   expect(await draft(page)).toBeNull();

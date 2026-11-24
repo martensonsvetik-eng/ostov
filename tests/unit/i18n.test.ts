@@ -7,8 +7,8 @@ test('нет пустых строк', () => { for (const d of [ru, en]) for (co
 test('ключевые строки', () => {
   expect(ru.hero.title).toBe('Кухня — это каркас дома');
   expect(en.hero.title).toBe('The kitchen is the frame of the home');
-  expect(ru.forms.demoNote).toBe('Демо-форма: данные никуда не отправляются');
-  expect(en.forms.demoNote).toBe('Demo form: no data is sent');
+  expect(ru.footer.rights).toBe('© 2026 ООО «Остов». Все права защищены.');
+  expect(en.footer.rights).toBe('© 2026 Ostov LLC. All rights reserved.');
 });
 test('EN: бюджеты проектов в евро, без ₽', () => {
   const metas = [en.projects.main.meta, ...Object.values(en.projects.cards).map((c) => c.meta)];
@@ -17,4 +17,10 @@ test('EN: бюджеты проектов в евро, без ₽', () => {
     expect(budget).toMatch(/^€\d{2,3} 000$/);
     expect(m).not.toContain('₽');
   }
+});
+
+// Решение заказчика 2026-11-24: сайт читается как сайт реальной компании — никаких пометок о демо и концепте.
+test('нет видимых пометок о демо, концепте и вымысле', () => {
+  const bad = /демо|концепт|вымышл|демонстрац|не отправл|заглушк|реальном проекте|demo|concept|fictional|demonstration|not sent|placeholder|real project/i;
+  for (const d of [ru, en]) for (const [k, v] of Object.entries(flat(d))) expect(`${k}: ${v}`).not.toMatch(bad);
 });

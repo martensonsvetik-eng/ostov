@@ -1,11 +1,11 @@
 ---
 /**
- * Подвал (brief.md §5): fictional company, address, phone, e-mail, a neutral «chat»
- * link instead of messenger logos (the brand is fictional, so no real accounts),
- * the questionnaire link, the data-policy stub (a <details>) and a visible concept
- * notice at body size, not small print.
- * The logo is decorative here: the company line right below it already names the brand,
- * so a labelled logo would be announced twice.
+ * Подвал (brief.md §5): company line, address, phone, e-mail (nonexistent data: a 000
+ * number, the reserved .example domain, an invented street), a neutral «chat» link
+ * instead of messenger logos (no real accounts), the questionnaire link, the short
+ * privacy summary (a <details>) and the «© 2026 ООО «Остов»» rights line.
+ * The logo is decorative here: the rights line names the company, so a labelled logo
+ * would only repeat it.
  */
 import { getDict, type Lang } from '../../i18n';
 import { logoPaths } from './logo-paths';
@@ -51,12 +51,12 @@ const tel = t.phone.replace(/[^+\d]/g, '');
       </details>
     </div>
 
-    <p class="footer__concept">{t.concept}</p>
+    <p class="footer__rights">{t.rights}</p>
   </div>
 </footer>
 
 <script>
-  // A «#policy» link opens the stub paragraph.
+  // A «#policy» link opens the privacy summary.
   const openPolicy = () => {
     const el = document.getElementById('policy');
     if (el instanceof HTMLDetailsElement && location.hash === '#policy') el.open = true;
@@ -122,7 +122,7 @@ const tel = t.phone.replace(/[^+\d]/g, '');
     padding-block: 0.5rem 1rem;
     color: var(--c-muted);
   }
-  .footer__concept {
+  .footer__rights {
     max-width: 44rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--c-hairline);
@@ -142,7 +142,7 @@ const tel = t.phone.replace(/[^+\d]/g, '');
     .footer__links {
       grid-column: 9 / -1;
     }
-    .footer__concept {
+    .footer__rights {
       grid-column: 1 / -1;
     }
   }

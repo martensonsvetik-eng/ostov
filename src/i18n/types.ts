@@ -74,7 +74,6 @@ export interface Dict {
     showroomHours: string;
   };
   forms: {
-    demoNote: string;
     noscript: string;
     loading: string;
     close: string;
@@ -123,6 +122,7 @@ export interface Dict {
       note: string;
       consent: string;
       submit: string;
+      successText: string;
     };
   };
   pro: {
@@ -141,7 +141,7 @@ export interface Dict {
     prepare: string;
     policy: string;
     policyText: string;
-    concept: string;
+    rights: string;
   };
   notFound: { title: string; text: string; home: string };
 }

@@ -6,6 +6,9 @@
  * (TODO-asset, credits.md) until the client's generated macro frames arrive.
  * Desktop parallax (§6): src/scripts/motion.ts moves the photos (`data-parallax`) inside
  * their frames; the frame (aspect-ratio, overflow hidden) never moves, so no layout shift.
+ * Hover (client round 2, hover devices only, off under reduced motion): the photo's inner
+ * wrapper `.material__zoom` slowly scales to 1.04 while a #C9CFB4 hairline is drawn left →
+ * right over the caption rule. The parallaxed <img> keeps its own transform untouched.
  */
 import { Picture } from 'astro:assets';
 import Button from '../ui/Button.astro';
@@ -42,16 +45,18 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
           <li class="material" data-material={key} data-reveal>
             <figure class="material__figure">
               <div class="material__media">
-                <Picture
-                  src={src}
-                  alt={scene.alt}
-                  formats={['avif', 'webp']}
-                  widths={[400, 600, 800, 1000]}
-                  sizes={SIZES}
-                  loading="lazy"
-                  decoding="async"
-                  data-parallax
-                />
+                <div class="material__zoom">
+                  <Picture
+                    src={src}
+                    alt={scene.alt}
+                    formats={['avif', 'webp']}
+                    widths={[400, 600, 800, 1000]}
+                    sizes={SIZES}
+                    loading="lazy"
+                    decoding="async"
+                    data-parallax
+                  />
+                </div>
               </div>
               <figcaption class="material__caption">
                 <h3 class="material__name">{scene.name}</h3>
@@ -108,6 +113,7 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
   }
 
   .material__caption {
+    position: relative;
     display: grid;
     gap: 0.375rem;
     margin-top: 1.25rem;
@@ -117,6 +123,42 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
   .material__text {
     max-width: 22rem;
     color: var(--c-muted);
+  }
+
+  /* The zoom wrapper fills the frame; it, not the parallaxed <img>, takes the hover scale. */
+  .material__zoom {
+    height: 100%;
+  }
+  /* Hairline drawn over the caption rule on hover; scaleX only, so no layout shift. */
+  .material__caption::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--c-link); /* #C9CFB4 on the graphite section */
+    transform: scaleX(0);
+    transform-origin: left center;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .material__zoom {
+      transition: transform 700ms var(--ease-out);
+    }
+    .material__caption::before {
+      transition: transform 700ms var(--ease-out);
+    }
+  }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .material:hover .material__zoom,
+    .material:focus-within .material__zoom {
+      transform: scale(1.04);
+    }
+    .material:hover .material__caption::before,
+    .material:focus-within .material__caption::before {
+      transform: scaleX(1);
+    }
   }
 
   .materials__samples {

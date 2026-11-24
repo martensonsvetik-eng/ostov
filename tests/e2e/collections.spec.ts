@@ -171,3 +171,50 @@ test('360px: без горизонтальной прокрутки с раск�
   await page.locator('#collections [data-collection-toggle]').first().click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= 360)).toBe(true);
 });
+
+// Раунд 2 (заказчик, 2026-11-24): наведение на карточки коллекций и материалов.
+test.describe('наведение на карточки', () => {
+  test.skip(({ viewport }) => (viewport?.width ?? 0) < 1024, 'эффект для устройств с наведением, проверяем на компьютере');
+  const veil = (el: Element) => getComputedStyle(el, '::after').opacity;
+
+  test('коллекции: фото затемняется при наведении и при фокусе с клавиатуры, текст не трогаем', async ({ page }) => {
+    await page.goto('/ostov/');
+    const card = page.locator('[data-collection]').first();
+    const media = card.locator('.collection__media');
+    await card.scrollIntoViewIfNeeded();
+    expect(await media.evaluate(veil)).toBe('0');
+    await media.hover();
+    await expect.poll(() => media.evaluate(veil)).toBe('0.3');
+    expect(await card.locator('.collection__name').evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+    await page.mouse.move(0, 0);
+    await expect.poll(() => media.evaluate(veil)).toBe('0');
+    // Клик мышью по «Подробнее» не оставляет фото затемнённым, Tab — затемняет.
+    await card.locator('[data-collection-toggle]').click();
+    await page.mouse.move(0, 0);
+    await expect.poll(() => media.evaluate(veil)).toBe('0');
+    await card.locator('[data-collection-toggle]').click();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect(card.locator('[data-collection-toggle]')).toBeFocused();
+    await expect.poll(() => media.evaluate(veil)).toBe('0.3');
+  });
+
+  test('материалы: рамка приближается, линия прорисовывается, у фото с параллаксом свой transform', async ({ page }) => {
+    await page.goto('/ostov/');
+    const scene = page.locator('[data-material]').first();
+    await scene.scrollIntoViewIfNeeded();
+    const zoom = scene.locator('.material__zoom');
+    const line = (el: Element) => getComputedStyle(el, '::before').transform;
+    expect(await zoom.evaluate((e) => getComputedStyle(e).transform)).toBe('none');
+    // Раскладка без учёта transform (у карточки ещё может идти появление при прокрутке).
+    const layout = () => scene.evaluate((e: HTMLElement) => [e.offsetLeft, e.offsetTop, e.offsetWidth, e.offsetHeight]);
+    const box = await layout();
+    await scene.hover();
+    await expect.poll(() => zoom.evaluate((e) => getComputedStyle(e).transform)).toBe('matrix(1.04, 0, 0, 1.04, 0, 0)');
+    await expect.poll(() => scene.locator('.material__caption').evaluate(line)).toBe('matrix(1, 0, 0, 1, 0, 0)');
+    // Масштаб 1.12 у <img> остаётся (его двигает параллакс), сдвига раскладки и прокрутки нет.
+    expect(await scene.locator('img').evaluate((e) => new DOMMatrix(getComputedStyle(e).transform).a)).toBeCloseTo(1.12);
+    expect(await layout()).toEqual(box);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+});

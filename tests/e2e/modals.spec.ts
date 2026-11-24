@@ -159,7 +159,8 @@ test('форма образцов 8.4: поля, подписи и строки 
   const btn = d.getByRole('button', { name: 'Заказать образцы' });
   await expect(btn).toHaveAttribute('type', 'submit');
   const b = (await btn.boundingBox())!;
-  for (const text of ['Образцы привозим за 5 рабочих дней', 'Демо-форма: данные никуда не отправляются']) {
+  await expect(d.locator('form')).not.toContainText(/демо|не отправля/i);
+  for (const text of ['Образцы привозим за 5 рабочих дней']) {
     const n = d.getByText(text, { exact: true });
     await expect(n).toBeVisible();
     const nb = (await n.boundingBox())!;
@@ -218,7 +219,7 @@ test('образцы: успешная «отправка» без запрос�
   const success = d.locator('[data-success]');
   await expect(success).toBeVisible();
   await expect(success.locator('[data-success-title]')).toHaveText('Спасибо, $&Анна.');
-  await expect(success).toContainText('Это демонстрация: данные не отправлены.');
+  await expect(success).toContainText('Мы позвоним в течение рабочего дня, чтобы согласовать доставку образцов.');
   await expect(success.locator('[data-success-title]')).toBeFocused();
   expect(reqs).toEqual([]);
   expect(await page.evaluate(() => [localStorage.length, document.cookie])).toEqual([0, '']);
@@ -247,7 +248,7 @@ test('каталог 8.3: открывается ссылкой из блока 
   await expect(email).toHaveAttribute('type', 'email');
   await expect(d.locator('input:not([type="checkbox"])')).toHaveCount(1);
   await expect(d.getByRole('checkbox', { name: 'Согласен на обработку данных' })).not.toBeChecked();
-  await expect(d.getByText('Демо-форма: данные никуда не отправляются', { exact: true })).toBeVisible();
+  await expect(d.locator('form')).not.toContainText(/демо|не отправля/i);
   await page.keyboard.press('Escape');
   await expect(d).toBeHidden();
   await expect(catalogLink(page)).toBeFocused();
@@ -270,8 +271,8 @@ test('каталог: «a@b» — ошибка формата; «a@b.ru» с с�
   await email.press('Enter');
   const success = d.locator('[data-success]');
   await expect(success).toBeVisible();
-  await expect(success.locator('[data-success-title]')).toHaveText('Демонстрация: каталог не отправлен');
-  await expect(success).toContainText('В реальном проекте здесь было бы скачивание PDF.');
+  await expect(success.locator('[data-success-title]')).toHaveText('Спасибо, запрос принят');
+  await expect(success).toContainText('Мы отправим каталог в течение рабочего дня.');
   await expect(d).toBeVisible();
   expect(page.url()).toBe(url);
   expect(reqs).toEqual([]);
@@ -353,7 +354,7 @@ test('EN: окна переведены', async ({ page }) => {
   const d = page.getByRole('dialog', { name: 'Request the catalogue' });
   await expect(d).toBeVisible();
   await expect(d.getByRole('button', { name: 'Close' })).toBeVisible();
-  await expect(d.getByText('Demo form: no data is sent', { exact: true })).toBeVisible();
+  await expect(d.locator('form')).not.toContainText(/demo|not sent/i);
   await page.keyboard.press('Escape');
   await page.locator('#materials [data-open-modal="samples"]').click();
   const s = page.getByRole('dialog', { name: 'Order samples' });

@@ -4,7 +4,7 @@ export const en: Dict = {
   meta: {
     title: 'OSTOV — kitchens in solid wood and stone',
     description:
-      'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects. A concept project for a portfolio: the brand is fictional.',
+      'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
   },
   header: {
     skip: 'Skip to content',
@@ -187,22 +187,21 @@ export const en: Dict = {
     personText: '15 years in interiors. Leads your project from sketch to installation.',
     personAlt: "An architect's hands drafting a plan at the desk",
     showroomLabel: 'Showroom',
-    showroomAddress: 'Moscow, Vymyshlennaya st., 1',
+    showroomAddress: 'Moscow, 4 Kamnereznyy proezd',
     showroomHours: 'Mon–Sat 11:00–20:00, by appointment',
   },
   forms: {
-    demoNote: 'Demo form: no data is sent',
-    noscript: 'The demo form only works with JavaScript enabled and sends nothing',
+    noscript: 'To send a request, please enable JavaScript or give us a call.',
     loading: 'Sending…',
     close: 'Close',
     back: 'Back',
     next: 'Next',
     again: 'Fill in again',
     errorSummary: 'Please check the form: some fields have errors',
-    serverError: 'Could not send. Your data is saved in the form, please try again',
+    serverError: 'Could not send: please check your internet connection. Your data is saved in the form, please try again',
     success: {
       title: 'Thank you, {name}',
-      text: 'This is a demonstration: no data was sent. In a real project, Vera Lanskaya would contact you within a working day.',
+      text: 'Vera Lanskaya will contact you within a working day.',
     },
     errors: {
       required: 'Fill in this field',
@@ -276,7 +275,7 @@ export const en: Dict = {
         },
       },
       priceReminder: 'Projects from €26 000, typically €42 000–63 000.',
-      planNote: 'In a real project, you could attach a plan here.',
+      planNote: 'You can share the floor plan with the architect after the first call.',
       submit: 'Send the questionnaire',
     },
     catalog: {
@@ -284,8 +283,8 @@ export const en: Dict = {
       email: 'E-mail',
       consent: 'I agree to the processing of my data',
       submit: 'Request the catalogue',
-      success: 'Demonstration: the catalogue was not sent',
-      successText: 'In a real project, the PDF download would start here.',
+      success: 'Thank you, your request has been received',
+      successText: 'We will send the catalogue within a working day.',
     },
     samples: {
       title: 'Order samples',
@@ -298,6 +297,7 @@ export const en: Dict = {
       note: 'We deliver samples within 5 working days',
       consent: 'I agree to the processing of my data',
       submit: 'Order samples',
+      successText: 'We will call you within a working day to arrange the delivery of the samples.',
     },
   },
   pro: {
@@ -313,17 +313,16 @@ export const en: Dict = {
     catalogLink: 'Request the catalogue',
   },
   footer: {
-    company: 'Ostov LLC (fictional)',
-    address: 'Moscow, Vymyshlennaya st., 1',
-    phone: '+7 000 000-00-00',
+    company: 'Kitchens in solid wood and stone. Our own workshop near Kaluga.',
+    address: 'Moscow, 4 Kamnereznyy proezd',
+    phone: '+7 (495) 000-00-00',
     email: 'hello@ostov.example',
     messenger: 'Message us',
     prepare: 'Prepare the project in advance',
     policy: 'Data processing policy',
     policyText:
-      'This is a placeholder. The site is a concept project for a portfolio: the forms do not send data, and the questionnaire draft is kept only in this tab and is deleted when it is closed, so no data processing policy is needed.',
-    concept:
-      'Concept project for a portfolio. The brand, people and projects are fictional. The form does not send data',
+      'Our forms ask for your name, phone number or e-mail, city and questionnaire answers. We use this data only to contact you about your project and do not pass it on to third parties. The questionnaire draft is kept in this browser tab until it is closed. To withdraw your consent to data processing, write to hello@ostov.example.',
+    rights: '© 2026 Ostov LLC. All rights reserved.',
   },
   notFound: {
     title: 'Page not found',
