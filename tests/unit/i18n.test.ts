@@ -10,3 +10,11 @@ test('ключевые строки', () => {
   expect(ru.forms.demoNote).toBe('Демо-форма: данные никуда не отправляются');
   expect(en.forms.demoNote).toBe('Demo form: no data is sent');
 });
+test('EN: бюджеты проектов в евро, без ₽', () => {
+  const metas = [en.projects.main.meta, ...Object.values(en.projects.cards).map((c) => c.meta)];
+  for (const m of metas) {
+    const budget = m.split(' · ')[1]!;
+    expect(budget).toMatch(/^€\d{2,3} 000$/);
+    expect(m).not.toContain('₽');
+  }
+});

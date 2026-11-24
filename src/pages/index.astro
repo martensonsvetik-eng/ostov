@@ -5,6 +5,8 @@ import HeroPreload from '../components/sections/HeroPreload.astro';
 import Facts from '../components/sections/Facts.astro';
 import Collections from '../components/sections/Collections.astro';
 import Materials from '../components/sections/Materials.astro';
+import Projects from '../components/sections/Projects.astro';
+import Process from '../components/sections/Process.astro';
 import SectionStubs from '../components/sections/SectionStubs.astro';
 import Contact from '../components/sections/Contact.astro';
 import Modal from '../components/ui/Modal.astro';
@@ -20,7 +22,8 @@ const forms = getDict('ru').forms;
   <Facts lang="ru" />
   <Collections lang="ru" />
   <Materials lang="ru" />
-  <SectionStubs lang="ru" only={['projects', 'process']} />
+  <Projects lang="ru" />
+  <Process lang="ru" />
   <Contact lang="ru" />
   <SectionStubs lang="ru" only={['pro']} />
   <Modal id="catalog" lang="ru" size="sm" title={forms.catalog.title}>

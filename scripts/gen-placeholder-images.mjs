@@ -1,4 +1,4 @@
-// Generates local placeholder images for blocks 3, 4 and 7 (Collections, Materials, architect portrait).
+// Generates local placeholder images for blocks 3, 4, 5 and 7 (Collections, Materials, Projects, architect portrait).
 // No downloads: warm tonal abstract compositions in the brief.md §6 palette that
 // hint at each collection's character, and texture-like macro frames for the
 // four materials. All are TODO-asset in credits.md: collection photos will be
@@ -190,11 +190,66 @@ const people = {
     <rect width="${PW}" height="${PH}" fill="url(#light)"/>`, light(0.35))],
 };
 
+/* ---------- Block 5: project photos (TODO-asset) — lead 3:2, cards 4:3 ---------- */
+const LW = 1800, LH = 1200, PCW = 1600, PCH = 1200;
+const projects = {
+  // Дом у сосен: oak island with a travertine top, tall window onto pines.
+  pines: [LW, LH, svgWrap(LW, LH, `
+    <rect width="${LW}" height="${LH}" fill="#e3dccf"/>
+    <rect x="1040" y="90" width="620" height="700" fill="#cfd2c0"/>
+    ${[0, 1, 2, 3, 4].map((i) => `<path d="M${1100 + i * 120} 790 L${1150 + i * 120} ${260 + (i % 2) * 90} L${1200 + i * 120} 790 Z" fill="${i % 2 ? '#5f6a4c' : '#6b7656'}" opacity="0.8"/>`).join('')}
+    <rect x="1040" y="90" width="620" height="700" fill="none" stroke="#3a3834" stroke-width="14"/>
+    <rect x="1343" y="90" width="14" height="700" fill="#3a3834"/>
+    <rect x="0" y="820" width="${LW}" height="380" fill="#d3cabb"/>
+    <rect x="260" y="700" width="1100" height="56" fill="url(#trav)"/>
+    <rect x="300" y="756" width="1020" height="380" fill="url(#oak)"/>
+    <rect width="${LW}" height="${LH}" fill="url(#light)"/>`,
+    `<linearGradient id="oak" x1="0" x2="1"><stop offset="0" stop-color="#bf9c74"/><stop offset="1" stop-color="#9a774f"/></linearGradient><linearGradient id="trav" x1="0" x2="1"><stop offset="0" stop-color="#e6dbc7"/><stop offset="1" stop-color="#cdbfa6"/></linearGradient>${light(0.4)}`),
+    [{ seed: 51, sx: 50, sy: 1.5, strength: 0.25 }]],
+  // Квартира на Патриарших: high ceiling, light fronts along the wall, narrow island.
+  patriarshy: [PCW, PCH, svgWrap(PCW, PCH, `
+    <rect width="${PCW}" height="${PCH}" fill="#ece7dd"/>
+    <rect x="80" y="60" width="1440" height="40" fill="#e2dcd0"/>
+    ${[0, 1, 2, 3, 4].map((i) => `<rect x="${120 + i * 276}" y="200" width="266" height="520" fill="#f3efe7" stroke="#d6cfc1" stroke-width="5"/>`).join('')}
+    <rect x="120" y="720" width="1376" height="36" fill="#d9d2c4"/>
+    <rect x="120" y="756" width="1376" height="300" fill="#e8e2d6"/>
+    <rect x="380" y="880" width="840" height="34" fill="#cfc6b6"/>
+    <rect x="400" y="914" width="800" height="286" fill="#b99b78"/>
+    <rect width="${PCW}" height="${PCH}" fill="url(#light)"/>`, light(0.3))],
+  // Кухня-гостиная в Юрмале: walnut island, dining table, big windows to a pale sea.
+  jurmala: [PCW, PCH, svgWrap(PCW, PCH, `
+    <rect width="${PCW}" height="${PCH}" fill="#e9e4da"/>
+    <rect x="80" y="80" width="1440" height="560" fill="#dfe2dc"/>
+    <rect x="80" y="420" width="1440" height="220" fill="#c9d0cb"/>
+    ${[0, 1, 2, 3].map((i) => `<rect x="${80 + i * 360}" y="80" width="12" height="560" fill="#8a8479"/>`).join('')}
+    <rect x="80" y="80" width="1440" height="560" fill="none" stroke="#8a8479" stroke-width="12"/>
+    <rect x="160" y="760" width="760" height="40" fill="#e3d9c6"/>
+    <rect x="180" y="800" width="720" height="400" fill="url(#walnut)"/>
+    <rect x="1040" y="860" width="420" height="24" fill="#8d6a4b"/>
+    <rect x="1070" y="884" width="16" height="300" fill="#6e5038"/><rect x="1414" y="884" width="16" height="300" fill="#6e5038"/>
+    <rect width="${PCW}" height="${PCH}" fill="url(#light)"/>`,
+    `<linearGradient id="walnut" x1="0" x2="1"><stop offset="0" stop-color="#6e4a33"/><stop offset="1" stop-color="#553624"/></linearGradient>${light(0.35)}`),
+    [{ seed: 52, sx: 50, sy: 1.5, strength: 0.3 }]],
+  // Лофт на Васильевском: brick wall, graphite fronts, brass pendants.
+  vasilievsky: [PCW, PCH, svgWrap(PCW, PCH, `
+    <rect width="${PCW}" height="${PCH}" fill="#9a6e58"/>
+    ${Array.from({ length: 16 }, (_, r) => Array.from({ length: 9 }, (_, c) => `<rect x="${c * 190 - (r % 2) * 95}" y="${r * 52}" width="182" height="46" fill="${(r * 7 + c * 3) % 5 ? '#a4765f' : '#8f6450'}"/>`).join('')).join('')}
+    ${[0, 1, 2].map((i) => `<rect x="${420 + i * 360}" y="0" width="4" height="300" fill="#2a2825"/><path d="M${382 + i * 360} 360 h80 l-14 -60 h-52 Z" fill="url(#brass)"/>`).join('')}
+    <rect x="0" y="640" width="${PCW}" height="44" fill="#d7cfc2"/>
+    <rect x="0" y="684" width="${PCW}" height="516" fill="#3a3834"/>
+    ${[0, 1, 2, 3].map((i) => `<rect x="${i * 400}" y="700" width="2" height="500" fill="#24221f"/>`).join('')}
+    <rect width="${PCW}" height="${PCH}" fill="url(#light)"/>`,
+    `<linearGradient id="brass" x1="0" x2="1"><stop offset="0" stop-color="#e0c181"/><stop offset="1" stop-color="#9b7a3f"/></linearGradient>${light(0.25)}`),
+    [{ seed: 53, sx: 4, sy: 2, strength: 0.35 }]],
+};
+
 const only = process.argv[2] ?? '';
 const want = (file) => file.startsWith(only);
 await mkdir(`${root}collections`, { recursive: true });
 await mkdir(`${root}materials`, { recursive: true });
 await mkdir(`${root}people`, { recursive: true });
+await mkdir(`${root}projects`, { recursive: true });
 for (const [name, [w, h, svg, layers]] of Object.entries(collections)) if (want(`collections/${name}`)) await render(`collections/${name}.jpg`, w, h, svg, layers);
 for (const [name, [w, h, svg, layers]] of Object.entries(materials)) if (want(`materials/${name}`)) await render(`materials/${name}.jpg`, w, h, svg, layers);
 for (const [name, [w, h, svg, layers]] of Object.entries(people)) if (want(`people/${name}`)) await render(`people/${name}.jpg`, w, h, svg, layers);
+for (const [name, [w, h, svg, layers]] of Object.entries(projects)) if (want(`projects/${name}`)) await render(`projects/${name}.jpg`, w, h, svg, layers);

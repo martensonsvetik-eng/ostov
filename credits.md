@@ -27,3 +27,5 @@
 | `src/assets/img/collections/neoclassic-cover.jpg`, `neoclassic-detail-1.jpg`, `neoclassic-detail-2.jpg` | Блок 3, «Неоклассика» | TODO-asset: стоковое фото на утверждении |
 | `src/assets/img/materials/oak.jpg`, `travertine.jpg`, `brass.jpg`, `hardware.jpg` | Блок 4, материалы | TODO-asset: макрокадры генерирует заказчик (brief.md §11); при замене указать, что изображения сгенерированы, и проверить на артефакты |
 | `src/assets/img/people/vera-lanskaya.jpg` | Блок 7, портрет архитектора (персонаж вымышлен) | TODO-asset: сгенерированный или стоковый портрет (brief.md §6), при замене отметить источник здесь |
+| `src/assets/img/projects/pines.jpg` (3:2) | Блок 5, главный проект «Дом у сосен» | TODO-asset: стоковое фото на утверждении (кандидаты — в отчёте Task 12) |
+| `src/assets/img/projects/patriarshy.jpg`, `jurmala.jpg`, `vasilievsky.jpg` (4:3) | Блок 5, карточки проектов | TODO-asset: стоковое фото на утверждении (кандидаты — в отчёте Task 12) |

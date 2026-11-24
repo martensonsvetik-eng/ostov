@@ -113,24 +113,33 @@ export const en: Dict = {
     title: 'Projects at different budgets',
     main: {
       name: 'House Among the Pines',
-      meta: 'Moscow region · 5.8 million ₽ · 16 weeks',
+      meta: 'Moscow region · €60 000 · 16 weeks',
       text: 'The client came with their own architect and a finished house plan. We suggested making the island and the worktop as one piece: oak and travertine with no visible joint.',
       quote:
         'The most valuable thing was that one person was responsible for everything, from the sketch to connecting the appliances.',
+      quoteCite: 'The client',
       planLabel: 'Floor plan',
       planAlt: 'Kitchen floor plan diagram for the House Among the Pines project',
+      imageAlt: 'Kitchen in a country house: an oak island with a travertine worktop, pines outside the window',
     },
     cards: {
-      '0': { name: 'Apartment on Patriarshy', meta: 'Moscow · 3.2 million ₽ · 13 weeks' },
+      '0': {
+        name: 'Apartment on Patriarshy',
+        meta: 'Moscow · €33 000 · 13 weeks',
+        imageAlt: 'Kitchen in a high-ceilinged apartment: light fronts along the wall and a narrow island',
+      },
       '1': {
         name: 'Kitchen-living room in Jūrmala',
-        meta: 'Latvia · €78,000 · 18 weeks · project run by video call',
+        meta: 'Latvia · €78 000 · 18 weeks · project run by video call',
+        imageAlt: 'Bright kitchen-living room by the sea: a long walnut island, a dining table and large windows',
       },
       '2': {
         name: 'Loft on Vasilievsky',
-        meta: 'Saint Petersburg · 2.7 million ₽ · 12 weeks · with a guest designer',
+        meta: 'Saint Petersburg · €28 000 · 12 weeks · with a guest designer',
+        imageAlt: 'Loft kitchen: graphite fronts against a brick wall, brass pendant lights over the worktop',
       },
     },
+    metaLabels: { place: 'Location', budget: 'Budget', duration: 'Timeline' },
   },
   process: {
     title: 'From sketch to the first dinner',

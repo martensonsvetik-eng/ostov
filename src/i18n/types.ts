@@ -49,10 +49,14 @@ export interface Dict {
       meta: string;
       text: string;
       quote: string;
+      quoteCite: string;
       planLabel: string;
       planAlt: string;
+      imageAlt: string;
     };
-    cards: R<Idx3, { name: string; meta: string }>;
+    cards: R<Idx3, { name: string; meta: string; imageAlt: string }>;
+    /** Visually hidden terms for the «place · budget · timing» line. */
+    metaLabels: R<'place' | 'budget' | 'duration'>;
   };
   process: { title: string; stepsLabel: string; steps: R<Idx4, { title: string; duration: string }> };
   faq: { title: string; items: R<Idx5, { q: string; a: string }> };
