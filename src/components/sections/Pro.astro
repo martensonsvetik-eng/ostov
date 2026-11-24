@@ -16,18 +16,18 @@ const keys = ['0', '1', '2', '3'] as const;
 ---
 <section id="pro" class="section pro on-dark" aria-labelledby="pro-title">
   <div class="container pro__grid">
-    <h2 id="pro-title" class="pro__title">{t.title}</h2>
+    <h2 id="pro-title" class="pro__title" data-reveal>{t.title}</h2>
 
     <ul class="pro__list" role="list">
       {keys.map((k, i) => (
-        <li class="pro__item">
+        <li class="pro__item" data-reveal>
           <span class="pro__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <span class="pro__text">{t.items[k]}</span>
         </li>
       ))}
     </ul>
 
-    <div class="pro__actions">
+    <div class="pro__actions" data-reveal>
       <Button variant="primary" href="#contact" data-pro-cta>{t.cta}</Button>
       <div class="pro__links">
         <Button variant="link" data-open-modal="samples" aria-haspopup="dialog">{t.samplesLink}</Button>

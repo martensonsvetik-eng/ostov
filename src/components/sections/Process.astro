@@ -19,11 +19,11 @@ const faqKeys = ['0', '1', '2', '3', '4'] as const;
 ---
 <section id="process" class="section process" aria-labelledby="process-title" data-faq>
   <div class="container">
-    <h2 id="process-title" class="process__title">{t.title}</h2>
+    <h2 id="process-title" class="process__title" data-reveal>{t.title}</h2>
 
     <ol class="steps" aria-label={t.stepsLabel} data-steps>
       {stepKeys.map((k, i) => (
-        <li class="step">
+        <li class="step" data-reveal>
           <span class="step__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <h3 class="step__title" data-step-title>{t.steps[k].title}</h3>
           <p class="step__duration" data-step-duration>{t.steps[k].duration}</p>
@@ -31,7 +31,7 @@ const faqKeys = ['0', '1', '2', '3', '4'] as const;
       ))}
     </ol>
 
-    <div class="faq">
+    <div class="faq" data-reveal>
       <h3 id="faq-title" class="faq__title">{faq.title}</h3>
       <ul class="faq__list" role="list" aria-labelledby="faq-title">
         {faqKeys.map((k) => {

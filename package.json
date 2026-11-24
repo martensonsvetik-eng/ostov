@@ -15,7 +15,8 @@
     "@astrojs/sitemap": "^3.7.6",
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/manrope": "^5.3.0",
-    "astro": "^7.4.13"
+    "astro": "^7.4.13",
+    "gsap": "^3.15.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",

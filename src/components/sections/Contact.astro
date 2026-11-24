@@ -23,7 +23,7 @@ const priceItems = t.priceDetails
 ---
 <section id="contact" class="section contact" aria-labelledby="contact-title">
   <div class="container contact__grid">
-    <div class="contact__head">
+    <div class="contact__head" data-reveal>
       <h2 id="contact-title" class="contact__title">{t.title}</h2>
       <div class="contact__price" data-price>
         <p class="eyebrow">{t.priceLabel}</p>
@@ -34,7 +34,7 @@ const priceItems = t.priceDetails
       </div>
     </div>
 
-    <figure class="person" data-person>
+    <figure class="person" data-person data-reveal>
       <div class="person__media">
         <Picture
           src={portrait}
@@ -57,7 +57,7 @@ const priceItems = t.priceDetails
       <ContactForm lang={lang} />
     </div>
 
-    <div class="showroom">
+    <div class="showroom" data-reveal>
       <h3 class="eyebrow showroom__label">{t.showroomLabel}</h3>
       <p class="showroom__address">{t.showroomAddress}</p>
       <p class="showroom__hours">{t.showroomHours}</p>

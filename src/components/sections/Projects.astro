@@ -42,10 +42,10 @@ const planTitleId = `projects-plan-title-${Astro.props.lang}`;
 ---
 <section id="projects" class="section projects" aria-labelledby="projects-title">
   <div class="container">
-    <h2 id="projects-title" class="projects__title">{t.title}</h2>
+    <h2 id="projects-title" class="projects__title" data-reveal>{t.title}</h2>
 
     <article class="lead" data-project="main" aria-labelledby="project-main-name">
-      <div class="lead__media">
+      <div class="lead__media" data-reveal>
         <Picture
           src={pines}
           alt={lead.imageAlt}
@@ -57,7 +57,7 @@ const planTitleId = `projects-plan-title-${Astro.props.lang}`;
         />
       </div>
 
-      <div class="lead__body">
+      <div class="lead__body" data-reveal>
         <h3 id="project-main-name" class="lead__name">{lead.name}</h3>
         <dl class="meta lead__meta">
           <div><dt class="visually-hidden">{t.metaLabels.place}</dt><dd data-project-place>{lead.place}</dd></div>
@@ -67,14 +67,14 @@ const planTitleId = `projects-plan-title-${Astro.props.lang}`;
         <p class="lead__text">{lead.text}</p>
       </div>
 
-      <figure class="lead__quote">
+      <figure class="lead__quote" data-reveal>
         <blockquote>
           <p>{lead.quote}</p>
         </blockquote>
         <figcaption class="caption">— {lead.quoteCite}</figcaption>
       </figure>
 
-      <figure class="lead__plan">
+      <figure class="lead__plan" data-reveal>
         <svg
           class="plan"
           viewBox="0 0 480 320"
@@ -129,7 +129,7 @@ const planTitleId = `projects-plan-title-${Astro.props.lang}`;
 
     <ul class="cards" role="list">
       {cards.map((c) => (
-        <li>
+        <li data-reveal>
           <article class="card" data-project={c.key} aria-labelledby={`project-${c.key}-name`}>
             <div class="card__media">
               <Picture

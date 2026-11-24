@@ -54,5 +54,11 @@ const skipLabel = lang === 'ru' ? 'Перейти к содержимому' : '
       <slot />
     </main>
     <slot name="after-main" />
+    <script>
+      // Reveal + desktop-only parallax (brief.md §6). GSAP is imported inside, lazily.
+      import { initReveal, initParallax } from '../scripts/motion';
+      initReveal();
+      void initParallax();
+    </script>
   </body>
 </html>

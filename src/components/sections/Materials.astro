@@ -4,7 +4,8 @@
  * `.on-dark` swaps the text/link/focus roles (#C9CFB4 links, #F4F1EA focus ring).
  * No hardware or appliance brands are named (§5). Images are neutral placeholders
  * (TODO-asset, credits.md) until the client's generated macro frames arrive.
- * Desktop parallax (§6) belongs to the motion task, not here.
+ * Desktop parallax (§6): src/scripts/motion.ts moves the photos (`data-parallax`) inside
+ * their frames; the frame (aspect-ratio, overflow hidden) never moves, so no layout shift.
  */
 import { Picture } from 'astro:assets';
 import Button from '../ui/Button.astro';
@@ -29,7 +30,7 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
 ---
 <section id="materials" class="section materials on-dark" aria-labelledby="materials-title">
   <div class="container">
-    <div class="materials__head">
+    <div class="materials__head" data-reveal>
       <h2 id="materials-title" class="materials__title">{t.title}</h2>
       <p class="materials__lead">{t.lead}</p>
     </div>
@@ -38,7 +39,7 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
       {scenes.map(([key, src]) => {
         const scene = t.scenes[key];
         return (
-          <li class="material" data-material={key}>
+          <li class="material" data-material={key} data-reveal>
             <figure class="material__figure">
               <div class="material__media">
                 <Picture
@@ -49,6 +50,7 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
                   sizes={SIZES}
                   loading="lazy"
                   decoding="async"
+                  data-parallax
                 />
               </div>
               <figcaption class="material__caption">
@@ -150,6 +152,15 @@ const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 
     }
     .material:nth-child(even) {
       margin-top: clamp(3rem, 1rem + 4vw, 5rem);
+    }
+  }
+
+  /* Parallax headroom: the photo is 12 % larger than its frame (6 % each side), so the
+     ±4 % drift never shows an edge. Set from first paint, so starting the parallax causes
+     no jump; with reduced motion or below 1024 px the photo sits at its natural size. */
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .material__media :global(img) {
+      transform: scale(1.12);
     }
   }
 </style>

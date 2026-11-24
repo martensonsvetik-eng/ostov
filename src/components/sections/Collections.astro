@@ -41,7 +41,7 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
 ---
 <section id="collections" class="section collections" aria-labelledby="collections-title" data-collections>
   <div class="container">
-    <h2 id="collections-title" class="collections__title">{t.title}</h2>
+    <h2 id="collections-title" class="collections__title" data-reveal>{t.title}</h2>
 
     <div class="collections__grid">
       {keys.map((key) => {
@@ -51,7 +51,7 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
         const panelId = `collection-${key}-details`;
         return (
           <>
-            <article class="collection" data-collection={key}>
+            <article class="collection" data-collection={key} data-reveal>
               <div class="collection__media">
                 <Picture
                   src={img.cover}

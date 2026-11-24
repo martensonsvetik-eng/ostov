@@ -13,7 +13,7 @@ const items = Object.values(t.items);
     <h2 id="facts-title" class="visually-hidden">{t.label}</h2>
     <ul class="facts__list" role="list">
       {items.map((item) => (
-        <li class="facts__item">
+        <li class="facts__item" data-reveal>
           <p class="facts__title">{item.title}</p>
           <p class="facts__text">{item.text}</p>
         </li>

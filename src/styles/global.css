@@ -162,3 +162,21 @@ a {
 section[id] {
   scroll-margin-top: var(--header-h);
 }
+
+/*
+ * Reveal on scroll (brief.md §6; src/scripts/motion.ts). Opacity + a 20 px rise,
+ * 500 ms ease-out, once. The hidden state needs JS (html.js), allowed motion and a
+ * screen, and it is only ever set by the script on elements that start below the
+ * fold — the first screen is never held back.
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal].is-pending:not(.is-in) {
+    opacity: 0;
+    transform: translateY(var(--reveal-shift));
+  }
+  html.js [data-reveal].is-in {
+    transition:
+      opacity var(--dur-reveal) var(--ease-out) var(--reveal-delay, 0ms),
+      transform var(--dur-reveal) var(--ease-out) var(--reveal-delay, 0ms);
+  }
+}
