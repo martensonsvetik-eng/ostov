@@ -113,7 +113,7 @@ export const en: Dict = {
     title: 'Projects at different budgets',
     main: {
       name: 'House Among the Pines',
-      meta: 'Moscow region · €60 000 · 16 weeks',
+      meta: 'Moscow region · €60 000 · 16 weeks',
       text: 'The client came with their own architect and a finished house plan. We suggested making the island and the worktop as one piece: oak and travertine with no visible joint.',
       quote:
         'The most valuable thing was that one person was responsible for everything, from the sketch to connecting the appliances.',
@@ -125,17 +125,17 @@ export const en: Dict = {
     cards: {
       '0': {
         name: 'Apartment on Patriarshy',
-        meta: 'Moscow · €33 000 · 13 weeks',
+        meta: 'Moscow · €33 000 · 13 weeks',
         imageAlt: 'Kitchen in a high-ceilinged apartment: light fronts along the wall and a narrow island',
       },
       '1': {
         name: 'Kitchen-living room in Jūrmala',
-        meta: 'Latvia · €78 000 · 18 weeks · project run by video call',
+        meta: 'Latvia · €78 000 · 18 weeks · project run by video call',
         imageAlt: 'Bright kitchen-living room by the sea: a long walnut island, a dining table and large windows',
       },
       '2': {
         name: 'Loft on Vasilievsky',
-        meta: 'Saint Petersburg · €28 000 · 12 weeks · with a guest designer',
+        meta: 'Saint Petersburg · €28 000 · 12 weeks · with a guest designer',
         imageAlt: 'Loft kitchen: graphite fronts against a brick wall, brass pendant lights over the worktop',
       },
     },
@@ -179,9 +179,9 @@ export const en: Dict = {
   contact: {
     title: 'Let us discuss your project',
     priceLabel: 'Price',
-    price: 'Projects from €26 000, typically €42 000–63 000.',
+    price: 'Projects from €26 000, typically €42 000–63 000.',
     priceDetails:
-      'Compact kitchen — from €26 000 · kitchen with an island — €42 000–63 000 · kitchen-living room with a pantry — from €73 000.',
+      'Compact kitchen — from €26 000 · kitchen with an island — €42 000–63 000 · kitchen-living room with a pantry — from €73 000.',
     personName: 'Vera Lanskaya',
     personRole: 'lead architect',
     personText: '15 years in interiors. Leads your project from sketch to installation.',
@@ -261,9 +261,9 @@ export const en: Dict = {
       budget: {
         label: 'Budget',
         options: {
-          upTo3: 'Up to €31 000',
-          from3to6: '€31 000–63 000',
-          over6: 'More than €63 000',
+          upTo3: 'Up to €31 000',
+          from3to6: '€31 000–63 000',
+          over6: 'More than €63 000',
           unknown: 'Not sure yet',
         },
       },
@@ -275,7 +275,7 @@ export const en: Dict = {
           overYear: 'More than a year',
         },
       },
-      priceReminder: 'Projects from €26 000, typically €42 000–63 000.',
+      priceReminder: 'Projects from €26 000, typically €42 000–63 000.',
       planNote: 'In a real project, you could attach a plan here.',
       submit: 'Send the questionnaire',
     },
@@ -321,7 +321,7 @@ export const en: Dict = {
     prepare: 'Prepare the project in advance',
     policy: 'Data processing policy',
     policyText:
-      'This is a placeholder. The site is a concept project for a portfolio: the forms neither send nor store data, so no data processing policy is needed.',
+      'This is a placeholder. The site is a concept project for a portfolio: the forms do not send data, and the questionnaire draft is kept only in this tab and is deleted when it is closed, so no data processing policy is needed.',
     concept:
       'Concept project for a portfolio. The brand, people and projects are fictional. The form does not send data',
   },

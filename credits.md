@@ -25,7 +25,7 @@
 | `src/assets/img/collections/geometry-cover.jpg`, `geometry-detail-1.jpg`, `geometry-detail-2.jpg` | Блок 3, «Тихая геометрия» | TODO-asset: стоковое фото (Unsplash/Pexels) на утверждении |
 | `src/assets/img/collections/modern-cover.jpg`, `modern-detail-1.jpg`, `modern-detail-2.jpg` | Блок 3, «Тёплый модерн» | TODO-asset: стоковое фото на утверждении |
 | `src/assets/img/collections/neoclassic-cover.jpg`, `neoclassic-detail-1.jpg`, `neoclassic-detail-2.jpg` | Блок 3, «Неоклассика» | TODO-asset: стоковое фото на утверждении |
-| `src/assets/img/materials/oak.jpg`, `travertine.jpg`, `brass.jpg`, `hardware.jpg` | Блок 4, материалы | TODO-asset: макрокадры генерирует заказчик (brief.md §11); при замене указать, что изображения сгенерированы, и проверить на артефакты |
+| `src/assets/img/materials/oak.jpg`, `travertine.jpg`, `brass.jpg`, `hardware.jpg` | Блок 4, материалы | TODO-asset: макрокадры генерирует автор проекта (разработчик) (brief.md §11); при замене указать, что изображения сгенерированы, и проверить на артефакты |
 | `src/assets/img/people/vera-lanskaya.jpg` | Блок 7, портрет архитектора (персонаж вымышлен) | TODO-asset: сгенерированный или стоковый портрет (brief.md §6), при замене отметить источник здесь |
 | `src/assets/img/projects/pines.jpg` (3:2) | Блок 5, главный проект «Дом у сосен» | TODO-asset: стоковое фото на утверждении (кандидаты — в отчёте Task 12) |
 | `src/assets/img/projects/patriarshy.jpg`, `jurmala.jpg`, `vasilievsky.jpg` (4:3) | Блок 5, карточки проектов | TODO-asset: стоковое фото на утверждении (кандидаты — в отчёте Task 12) |
@@ -40,4 +40,4 @@
 
 ## Сверка (Task 15)
 
-Все 19 файлов в `src/assets/img/` перечислены выше; в `public/` — только сгенерированная графика и `robots.txt`. Сторонних изображений, кроме `hero.jpg` (Unsplash License), на странице нет. Перед публикацией заменить заглушки TODO-asset и дописать источник каждого нового фото в эту таблицу.
+Все 19 файлов в `src/assets/img/` перечислены выше; в `public/` — только сгенерированная графика (`robots.txt` формируется из настроенного `site`, `src/pages/robots.txt.ts`). Сторонних изображений, кроме `hero.jpg` (Unsplash License), на странице нет. Перед публикацией заменить заглушки TODO-asset и дописать источник каждого нового фото в эту таблицу.

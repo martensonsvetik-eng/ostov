@@ -1,5 +1,0 @@
-# Concept project, not for indexing.
-User-agent: *
-Disallow: /
-
-Sitemap: https://USER.github.io/ostov/sitemap-index.xml

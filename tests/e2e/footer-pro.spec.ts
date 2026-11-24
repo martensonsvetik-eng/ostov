@@ -88,7 +88,9 @@ test('404 со ссылкой на главную', async ({ page }) => {
 test('robots.txt, sitemap без /ui/, og-картинки и favicon доступны', async ({ request }) => {
   const robots = await request.get('/ostov/robots.txt');
   expect(robots.ok()).toBe(true);
-  expect(await robots.text()).toMatch(/Sitemap:/);
+  const robotsTxt = await robots.text();
+  expect(robotsTxt).toContain('Disallow: /');
+  expect(robotsTxt).toMatch(/^Sitemap: https?:\/\/\S+\/ostov\/sitemap-index\.xml$/m);
   const sm = await request.get('/ostov/sitemap-index.xml');
   expect(sm.ok()).toBe(true);
   const sm0 = await (await request.get('/ostov/sitemap-0.xml')).text();

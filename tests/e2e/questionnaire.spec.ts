@@ -471,7 +471,7 @@ test('EN: анкета переведена', async ({ page }) => {
   const budget = (await d.locator('[data-q-step="4"] [name="budget"]').evaluateAll((els) =>
     els.map((e) => (e as HTMLInputElement).labels![0]!.textContent!.trim()),
   ));
-  expect(budget).toEqual(['Up to €31 000', '€31 000–63 000', 'More than €63 000', 'Not sure yet']);
+  expect(budget).toEqual(['Up to €31 000', '€31 000–63 000', 'More than €63 000', 'Not sure yet']);
   for (const t of budget) expect(t).not.toContain('₽');
   await expect(d.locator('[data-q-step="4"]')).not.toContainText('₽');
   await expect(d.locator('[data-q-step="4"]')).toContainText('€');

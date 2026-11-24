@@ -181,6 +181,8 @@ export function initForm(
     }
   }
 
+  const deferred = new Set<string>(); // blur checks held back while a pointer is down (see below)
+
   function clearAll(): void {
     for (const name of names) {
       delete errors[name];
@@ -214,7 +216,6 @@ export function initForm(
   // under the pointer and the click lands elsewhere (e.g. the consent box below a field).
   // So while a button is held, blur checks wait until the click has been delivered.
   let pressed = false;
-  const deferred = new Set<string>();
   document.addEventListener('pointerdown', () => {
     pressed = true;
   });

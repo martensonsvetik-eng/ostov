@@ -166,7 +166,7 @@ test('английская версия: бюджеты в евро, без ₽'
   await page.goto('/ostov/en/');
   await expect(page.locator('#projects h2')).toHaveText('Projects at different budgets');
   const budgets = await page.locator('#projects [data-project-budget]').allTextContents();
-  expect(budgets).toEqual(['€60 000', '€33 000', '€78 000', '€28 000']);
+  expect(budgets).toEqual(['€60 000', '€33 000', '€78 000', '€28 000']);
   for (const b of budgets) {
     expect(b).toContain('€');
     expect(b).not.toContain('₽');
