@@ -8,7 +8,17 @@ const form = (page: Page) => page.locator('#contact form[data-demo-form]');
 async function open(page: Page, query = '') {
   await page.goto(`/ostov/${query}`);
   await page.locator('#contact').scrollIntoViewIfNeeded();
-  // Lazy images in and around the section finish loading before we start counting requests.
+  // All lazy images load now, before we start counting requests: Chrome widens the lazy-load
+  // distance when it estimates a slow connection (e.g. a loaded test machine), so an image
+  // far above could otherwise start loading mid-test and be counted as a form request.
+  await page.evaluate(() =>
+    Promise.all(
+      [...document.images].map((img) => {
+        img.loading = 'eager';
+        return img.decode().catch(() => undefined);
+      }),
+    ),
+  );
   await page.waitForLoadState('networkidle');
 }
 
@@ -300,4 +310,17 @@ test.describe('случай 4: без JavaScript', () => {
     expect(page.url()).toBe(url);
     await expect(f.getByLabel('Как к вам обращаться')).toHaveValue('Анна');
   });
+});
+
+test('ошибка после ухода с поля не «съедает» клик мышью по согласию ниже', async ({ page }) => {
+  await open(page);
+  const f = form(page);
+  await f.getByLabel('Телефон').fill('123');
+  const consent = f.getByRole('checkbox', { name: 'Согласен на обработку данных' });
+  await consent.scrollIntoViewIfNeeded();
+  const b = (await consent.boundingBox())!;
+  // ручное нажатие: фокус уходит с поля на mousedown, ошибка не должна сдвигать цель до click
+  await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+  await expect(consent).toBeChecked();
+  await expect(f.locator('[data-error-for="phone"]')).toHaveText('Укажите телефон: не меньше 10 цифр');
 });

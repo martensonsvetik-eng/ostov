@@ -276,6 +276,7 @@ export const en: Dict = {
       consent: 'I agree to the processing of my data',
       submit: 'Request the catalogue',
       success: 'Demonstration: the catalogue was not sent',
+      successText: 'In a real project, the PDF download would start here.',
     },
     samples: {
       title: 'Order samples',

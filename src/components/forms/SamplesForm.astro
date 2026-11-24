@@ -1,0 +1,104 @@
+---
+/**
+ * Samples order (brief.md §8.4) inside the «samples» modal. Fields: materials (at least
+ * one), name, phone (as in §8.1), who you are, delivery city, studio name — shown only for
+ * «Архитектор / дизайнер» — and consent. Checks, loading, success and failure as in §8.1
+ * (shared form.ts). Nothing is sent; method="dialog" keeps a no-JS submit from navigating.
+ */
+import DemoForm from './DemoForm.astro';
+import Field from '../ui/Field.astro';
+import Choice from '../ui/Choice.astro';
+import Checkbox from '../ui/Checkbox.astro';
+import { getDict, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  /** id of the heading that names the form (the modal title). */
+  labelledby: string;
+}
+const { lang, labelledby } = Astro.props;
+const f = getDict(lang).forms;
+const s = f.samples;
+const opts = <K extends string>(o: Record<K, string>) =>
+  (Object.entries(o) as [K, string][]).map(([value, label]) => ({ value, label }));
+---
+<DemoForm
+  lang={lang}
+  plain
+  method="dialog"
+  submit={s.submit}
+  note={s.note}
+  successText={f.success.text}
+  aria-labelledby={labelledby}
+  data-samples-form
+  data-success-template={f.success.title}
+>
+  <Choice id="samples-materials" name="materials" legend={s.materials} type="checkbox" inline options={opts(f.materials)} />
+
+  <div class="sform__fields">
+    <Field id="samples-name" name="name" label={s.name} type="text" autocomplete="name" required />
+    <Field id="samples-phone" name="phone" label={s.phone} type="tel" inputmode="tel" autocomplete="tel" required />
+  </div>
+
+  <Choice id="samples-who" name="who" legend={s.who} type="radio" inline required checked={['owner']} options={opts(f.contact.who.options)} />
+
+  <div class="sform__fields">
+    <Field id="samples-city" name="city" label={s.city} type="text" autocomplete="address-level2" required />
+    <div data-studio hidden>
+      <Field id="samples-studio" name="studio" label={s.studio} type="text" autocomplete="organization" disabled />
+    </div>
+  </div>
+
+  <Checkbox id="samples-consent" name="consent" label={s.consent} required />
+</DemoForm>
+
+<script>
+  import { initForm, withName } from '../../scripts/form';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-samples-form]')) {
+    const template = form.dataset.successTemplate ?? '{name}';
+    const studioBox = form.querySelector<HTMLElement>('[data-studio]');
+    const studio = studioBox?.querySelector<HTMLInputElement>('input');
+
+    // «Название студии» only for «Архитектор / дизайнер»; hidden = disabled, so it is
+    // neither focusable nor part of the form data.
+    const syncStudio = () => {
+      const pro = (form.elements.namedItem('who') as RadioNodeList | null)?.value === 'pro';
+      if (studioBox) studioBox.hidden = !pro;
+      if (studio) studio.disabled = !pro;
+    };
+    form.addEventListener('change', (e) => {
+      if ((e.target as HTMLInputElement).name === 'who') syncStudio();
+    });
+    // form.reset() («Заполнить ещё раз») restores «Владелец дома» without a change event.
+    form.addEventListener('reset', () => setTimeout(syncStudio));
+    syncStudio();
+
+    initForm(
+      form,
+      {
+        materials: 'choice',
+        name: 'name',
+        phone: 'phone',
+        who: 'choice',
+        city: 'text',
+        studio: 'optional',
+        consent: 'consent',
+      },
+      (data) => `${withName(template, String(data.get('name') ?? '').trim())}.`,
+    );
+  }
+</script>
+
+<style>
+  .sform__fields {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .sform__fields {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

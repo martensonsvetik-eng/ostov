@@ -7,6 +7,11 @@ import Collections from '../../components/sections/Collections.astro';
 import Materials from '../../components/sections/Materials.astro';
 import SectionStubs from '../../components/sections/SectionStubs.astro';
 import Contact from '../../components/sections/Contact.astro';
+import Modal from '../../components/ui/Modal.astro';
+import CatalogForm from '../../components/forms/CatalogForm.astro';
+import SamplesForm from '../../components/forms/SamplesForm.astro';
+import { getDict } from '../../i18n';
+const forms = getDict('en').forms;
 ---
 <Base lang="en" title="OSTOV" description="OSTOV — kitchens built around you.">
   <HeroPreload slot="head" />
@@ -17,4 +22,10 @@ import Contact from '../../components/sections/Contact.astro';
   <SectionStubs lang="en" only={['projects', 'process']} />
   <Contact lang="en" />
   <SectionStubs lang="en" only={['pro']} />
+  <Modal id="catalog" lang="en" size="sm" title={forms.catalog.title}>
+    <CatalogForm lang="en" labelledby="modal-catalog-title" />
+  </Modal>
+  <Modal id="samples" lang="en" title={forms.samples.title}>
+    <SamplesForm lang="en" labelledby="modal-samples-title" />
+  </Modal>
 </Base>

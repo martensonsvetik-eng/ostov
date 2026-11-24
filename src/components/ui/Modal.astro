@@ -1,0 +1,173 @@
+---
+/**
+ * Modal window on a native <dialog> (brief.md §8.2): opened with showModal() by
+ * src/scripts/modal.ts from any [data-open-modal="<id>"] trigger. Esc and «×» close it,
+ * focus stays inside and returns to the opener, the page behind does not scroll.
+ * Full screen below 768 px. Only opacity/transform animate; nothing under reduced motion.
+ * Without JS the dialog is never opened and its triggers are hidden (global.css).
+ */
+import { getDict, type Lang } from '../../i18n';
+
+export type ModalId = 'catalog' | 'samples' | 'questionnaire';
+
+interface Props {
+  id: ModalId;
+  lang: Lang;
+  title: string;
+  /** sm — one-field forms (catalog); md — longer forms. */
+  size?: 'sm' | 'md';
+}
+const { id, lang, title, size = 'md' } = Astro.props;
+const close = getDict(lang).forms.close;
+const titleId = `modal-${id}-title`;
+---
+<dialog class:list={['modal', `modal--${size}`]} id={`modal-${id}`} data-modal={id} aria-labelledby={titleId}>
+  <div class="modal__head">
+    <h2 class="modal__title" id={titleId}>{title}</h2>
+    <button class="modal__close" type="button" data-modal-close aria-label={close}>
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <path d="M4 4l12 12M16 4L4 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+  <div class="modal__body">
+    <slot />
+  </div>
+</dialog>
+
+<style>
+  .modal {
+    width: min(var(--modal-w), calc(100% - 2 * var(--gutter)));
+    max-width: none;
+    max-height: calc(100dvh - 4rem);
+    padding: 0;
+    border: 1px solid var(--c-hairline);
+    border-radius: var(--radius);
+    background: var(--c-bg);
+    color: var(--c-text);
+    overscroll-behavior: contain;
+  }
+  .modal--sm {
+    --modal-w: 34rem;
+  }
+  .modal--md {
+    --modal-w: 44rem;
+  }
+  .modal[open] {
+    animation: modal-in var(--dur-expand) var(--ease-out);
+  }
+  .modal::backdrop {
+    background: rgb(36 34 31 / 0.55);
+  }
+  .modal[open]::backdrop {
+    animation: modal-fade var(--dur-expand) var(--ease-out);
+  }
+
+  .modal {
+    --modal-pad: clamp(1.25rem, 0.9rem + 1.6vw, 2.5rem);
+  }
+
+  .modal__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: var(--modal-pad) var(--modal-pad) 1.5rem;
+  }
+  .modal__body {
+    padding: 0 var(--modal-pad) var(--modal-pad);
+  }
+  .modal__title {
+    margin: 0;
+    padding-top: 0.25rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 1.8rem + 0.8vw, 2.5rem); /* serif only from 32 px (§6) */
+    font-weight: 500;
+    line-height: var(--lh-heading);
+  }
+
+  .modal__close {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--hit);
+    height: var(--hit);
+    margin: -0.25rem -0.5rem 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--c-text);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .modal__close:hover {
+    transform: rotate(90deg);
+  }
+  .modal__close:focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 2px;
+  }
+
+  /* Phone: the window takes the whole screen (brief.md §8.2). */
+  @media (max-width: 767px) {
+    .modal {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+    }
+    .modal__head {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      background: var(--c-bg);
+      border-bottom: 1px solid var(--c-hairline);
+    }
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+  @keyframes modal-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modal[open],
+    .modal[open]::backdrop {
+      animation: none;
+    }
+    .modal__close {
+      transition: none;
+    }
+    .modal__close:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<style is:global>
+  html.modal-open {
+    overflow: hidden;
+  }
+  /* Without JS a modal can never open: hide its triggers instead of leaving dead buttons. */
+  html:not(.js) [data-open-modal] {
+    display: none !important;
+  }
+</style>
+
+<script>
+  import { initModals } from '../../scripts/modal';
+  initModals();
+</script>

@@ -1,0 +1,42 @@
+---
+/**
+ * Catalog request (brief.md §8.3): one e-mail field and consent, inside the «catalog»
+ * modal. Success says plainly it is a demonstration; nothing is sent or downloaded.
+ * method="dialog": even if the window were shown without JS, Enter in the single field
+ * would only close it — never navigate. With JS, form.ts prevents every submit.
+ */
+import DemoForm from './DemoForm.astro';
+import Field from '../ui/Field.astro';
+import Checkbox from '../ui/Checkbox.astro';
+import { getDict, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  /** id of the heading that names the form (the modal title). */
+  labelledby: string;
+}
+const { lang, labelledby } = Astro.props;
+const c = getDict(lang).forms.catalog;
+---
+<DemoForm
+  lang={lang}
+  plain
+  method="dialog"
+  submit={c.submit}
+  successText={c.successText}
+  aria-labelledby={labelledby}
+  data-catalog-form
+  data-success-title-text={c.success}
+>
+  <Field id="catalog-email" name="email" label={c.email} type="email" inputmode="email" autocomplete="email" required />
+  <Checkbox id="catalog-consent" name="consent" label={c.consent} required />
+</DemoForm>
+
+<script>
+  import { initForm } from '../../scripts/form';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-catalog-form]')) {
+    const title = form.dataset.successTitleText ?? '';
+    initForm(form, { email: 'email', consent: 'consent' }, () => title);
+  }
+</script>

@@ -24,6 +24,14 @@ type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 export type FormState = 'idle' | 'loading' | 'success' | 'error';
 
 /**
+ * Puts the name into a «…{name}…» template. split/join, not String#replace: a name
+ * such as «$&» must stay literal instead of being read as a replacement pattern.
+ */
+export function withName(template: string, name: string): string {
+  return template.split('{name}').join(name);
+}
+
+/**
  * @param onSuccess receives the submitted data and returns the success heading text
  *   (written with textContent, never as HTML).
  */
@@ -184,6 +192,7 @@ export function initForm(
     if (summary) summary.hidden = true;
     summaryList?.replaceChildren();
     summaryKey = '';
+    deferred.clear();
     if (serverError) serverError.hidden = true;
   }
 
@@ -201,10 +210,31 @@ export function initForm(
     if ((el.type === 'radio' || el.type === 'checkbox') && (live.has(el.name) || submitted)) check(el.name);
   });
 
+  // A mouse press moves focus on mousedown; an error appearing right then shifts the layout
+  // under the pointer and the click lands elsewhere (e.g. the consent box below a field).
+  // So while a button is held, blur checks wait until the click has been delivered.
+  let pressed = false;
+  const deferred = new Set<string>();
+  document.addEventListener('pointerdown', () => {
+    pressed = true;
+  });
+  const release = () => {
+    if (!pressed) return;
+    pressed = false;
+    setTimeout(() => {
+      for (const name of deferred) check(name);
+      deferred.clear();
+    });
+  };
+  document.addEventListener('pointerup', release);
+  document.addEventListener('pointercancel', release);
+
   form.addEventListener('focusout', (e) => {
     const el = e.target as Control;
     if (!Object.hasOwn(schema, el.name) || el.type === 'radio' || el.type === 'checkbox') return;
-    if (dirty.has(el.name) || submitted) check(el.name);
+    if (!dirty.has(el.name) && !submitted) return;
+    if (pressed) deferred.add(el.name);
+    else check(el.name);
   });
 
   form.addEventListener('submit', async (e) => {

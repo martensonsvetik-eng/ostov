@@ -107,7 +107,7 @@ export interface Dict {
       planNote: string;
       submit: string;
     };
-    catalog: { title: string; email: string; consent: string; submit: string; success: string };
+    catalog: { title: string; email: string; consent: string; submit: string; success: string; successText: string };
     samples: {
       title: string;
       materials: string;
