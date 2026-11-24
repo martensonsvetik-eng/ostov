@@ -46,9 +46,9 @@ export const en: Dict = {
     items: {
       geometry: {
         name: 'Quiet Geometry',
-        text: 'Strict planes, concealed handles, oak and graphite.',
+        text: 'Strict planes, concealed handles, black-stained and light oak.',
         description:
-          'Handleless fronts open with a push or through a shadow gap. Oiled oak and graphite lacquer, a travertine worktop — everything in one plane, nothing protruding.',
+          'Handleless fronts open with a push or through a shadow gap. Black-stained oak under oil, light oak tall units and a black stone worktop — everything in one plane, nothing protruding.',
         coverAlt: 'Quiet Geometry kitchen: handleless black-stained oak fronts beside a natural oak tall unit',
         detailAlts: {
           '0': 'Leather bar stools at the island and handleless black oak drawers',
@@ -57,9 +57,9 @@ export const en: Dict = {
       },
       modern: {
         name: 'Warm Modern',
-        text: 'Soft radii, walnut veneer, brass.',
+        text: 'Walnut veneer, pale stone, brass light.',
         description:
-          'Rounded ends on the island and cabinets, walnut veneer with an open grain. Brass rails and pulls are left unlacquered and darken over time, as in old houses.',
+          'Walnut veneer with an open grain on the fronts, an island with a pale stone top. The brass pendant and pulls are left unlacquered and darken over time, as in old houses.',
         coverAlt: 'Warm Modern kitchen: walnut-veneer island and cabinets, a white worktop and a hammered brass pendant',
         detailAlts: {
           '0': 'A hammered brass pendant against walnut wall cabinets',
@@ -98,12 +98,12 @@ export const en: Dict = {
       },
       brass: {
         name: 'Brass',
-        text: 'left unlacquered, it develops a patina over time.',
+        text: 'left unlacquered: it darkens softly over time.',
         alt: 'Close-up of a brass knob on a light cabinet front',
       },
       hardware: {
         name: 'Hardware',
-        text: 'mechanisms from premium European makers, with soft closing.',
+        text: 'pull-out systems and organisers with soft closing.',
         alt: 'A full-extension drawer with a dish organiser',
       },
     },
@@ -114,7 +114,7 @@ export const en: Dict = {
     main: {
       name: 'House Among the Pines',
       meta: 'Moscow region · €60 000 · 16 weeks',
-      text: 'The client came with their own architect and a finished house plan. We suggested making the island and the worktop as one piece: oak and travertine with no visible joint.',
+      text: 'The client came with their own architect and a finished house plan. We suggested making the island and the worktop as one piece: walnut and pale stone with no visible joint.',
       quote:
         'The most valuable thing was that one person was responsible for everything, from the sketch to connecting the appliances.',
       quoteCite: 'The client',

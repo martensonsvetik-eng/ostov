@@ -9,7 +9,7 @@ test('коллекции: три карточки и копия блока', asy
   const cards = s.locator('[data-collection]');
   await expect(cards).toHaveCount(3);
   await expect(cards.nth(0)).toContainText('Тихая геометрия');
-  await expect(cards.nth(0)).toContainText('Строгие плоскости, скрытые ручки, дуб и графит.');
+  await expect(cards.nth(0)).toContainText('Строгие плоскости, скрытые ручки, морёный и светлый дуб.');
   await expect(cards.nth(1)).toContainText('Тёплый модерн');
   await expect(cards.nth(2)).toContainText('Неоклассика');
 });
