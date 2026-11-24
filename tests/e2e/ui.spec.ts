@@ -57,3 +57,36 @@ test('ui-кит: группы выбора — radiogroup и флажки', asyn
   await expect(page.locator('fieldset input[type="checkbox"]').first()).toBeAttached();
   await expect(page.locator('fieldset legend').first()).toBeVisible();
 });
+
+test('ui-кит: анимируются только transform и opacity', async ({ page }) => {
+  await page.goto('/ostov/ui/');
+  const bad = await page.evaluate(() => {
+    const out: string[] = [];
+    const els = document.querySelectorAll('.btn, .btn *, .field, .field *, .choice, .choice *');
+    for (const el of els) {
+      for (const pseudo of [null, '::before', '::after']) {
+        const cs = getComputedStyle(el, pseudo);
+        const props = cs.transitionProperty.split(',').map((x) => x.trim());
+        const durs = cs.transitionDuration.split(',').map((x) => parseFloat(x));
+        // A property animates only if its duration is > 0 (the default is "all 0s").
+        props.forEach((prop, i) => {
+          if (durs[i % durs.length]! > 0 && !/^(transform|opacity)$/.test(prop)) {
+            out.push(`${el.className || el.tagName}${pseudo ?? ''}: ${prop}`);
+          }
+        });
+      }
+    }
+    return out;
+  });
+  expect(bad).toEqual([]);
+});
+
+test.describe('ui-кит: уменьшение движения', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('спиннер загрузки не вращается', async ({ page }) => {
+    await page.goto('/ostov/ui/');
+    const spinner = page.locator('button[aria-busy="true"] .btn__spinner').first();
+    await expect(spinner).toBeVisible();
+    expect(await spinner.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  });
+});

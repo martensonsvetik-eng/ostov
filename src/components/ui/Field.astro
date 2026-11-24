@@ -77,9 +77,7 @@ const errorId = `${id}-error`;
     background: var(--c-bg-2);
     color: var(--c-dark);
     font: 400 1rem/1.4 var(--font-sans); /* ≥16 px: no iOS zoom on focus */
-    transition:
-      border-color var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-fast) var(--ease-out);
+    /* No transition: only transform/opacity may animate; border changes are instant. */
   }
 
   .field__input:hover {

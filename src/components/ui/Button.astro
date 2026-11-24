@@ -35,6 +35,7 @@ const inactive = disabled || loading;
       href={inactive ? undefined : href}
       aria-disabled={inactive ? 'true' : undefined}
       role={inactive ? 'link' : undefined}
+      aria-busy={loading ? 'true' : undefined}
       {...rest}
     >
       <span class="btn__label"><slot /></span>
@@ -80,11 +81,26 @@ const inactive = disabled || loading;
     text-decoration: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition:
-      background-color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      transform var(--dur-fast) var(--ease-out);
+    isolation: isolate;
+    /* Only transform and opacity animate (brief.md §6). Colours switch instantly;
+       hover fills cross-fade via the ::before layer below. */
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  /* Hover/pressed fill layer: cross-fades with opacity under the label. */
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--btn-fill, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+  .btn:is(:hover, :active):not(:disabled, [aria-disabled='true'])::before {
+    opacity: 1;
   }
 
   .btn:focus-visible {
@@ -101,23 +117,19 @@ const inactive = disabled || loading;
     --btn-bg: var(--c-accent);
     --btn-fg: var(--c-on-accent);
     --btn-border: var(--c-accent);
-  }
-  .btn--primary:hover:not(:disabled, [aria-disabled='true']) {
-    --btn-bg: var(--c-accent-hover);
-    --btn-border: var(--c-accent-hover);
+    --btn-fill: var(--c-accent-hover);
   }
   .btn--primary:active:not(:disabled, [aria-disabled='true']) {
-    --btn-bg: var(--c-accent-active);
-    --btn-border: var(--c-accent-active);
+    --btn-fill: var(--c-accent-active);
   }
 
   /* Secondary — outline, fills with text colour on hover */
   .btn--secondary {
     --btn-fg: var(--c-text);
     --btn-border: var(--c-text);
+    --btn-fill: var(--c-text);
   }
   .btn--secondary:hover:not(:disabled, [aria-disabled='true']) {
-    --btn-bg: var(--c-text);
     --btn-fg: var(--c-bg);
   }
   :global(.on-dark) .btn--secondary:hover:not(:disabled, [aria-disabled='true']) {
@@ -140,7 +152,6 @@ const inactive = disabled || loading;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.3em;
     text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
-    transition: text-decoration-color var(--dur-fast) var(--ease-out);
   }
   .btn--link:hover .btn__label {
     text-decoration-color: currentColor;
@@ -178,6 +189,9 @@ const inactive = disabled || loading;
     border-radius: 50%;
     animation: btn-spin 800ms linear infinite;
   }
+  .btn--link::before {
+    display: none;
+  }
 
   @keyframes btn-spin {
     to {
@@ -186,8 +200,9 @@ const inactive = disabled || loading;
   }
 
   @media (prefers-reduced-motion: reduce) {
+    /* Nothing moves: the open ring stays as a static busy indicator. */
     .btn__spinner {
-      animation-duration: 2.4s;
+      animation: none;
     }
   }
 </style>

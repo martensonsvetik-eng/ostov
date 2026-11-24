@@ -123,9 +123,7 @@ const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(' ')
     border: 1px solid var(--c-line);
     background: var(--c-bg-2);
     cursor: pointer;
-    transition:
-      border-color var(--dur-fast) var(--ease-out),
-      background-color var(--dur-fast) var(--ease-out);
+    /* Border/fill change instantly; only the inner mark animates (transform). */
   }
 
   .choice__input--radio {
