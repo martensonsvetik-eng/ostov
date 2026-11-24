@@ -47,11 +47,35 @@ export const en: Dict = {
       geometry: {
         name: 'Quiet Geometry',
         text: 'Strict planes, concealed handles, oak and graphite.',
+        description:
+          'Handleless fronts open with a push or through a shadow gap. Oiled oak and graphite lacquer, a travertine worktop — everything in one plane, nothing protruding.',
+        coverAlt: 'A Quiet Geometry kitchen: handleless graphite fronts under an oak worktop',
+        detailAlts: {
+          '0': 'A shadow gap instead of handles on graphite fronts',
+          '1': 'Close-up of an oak worktop above a graphite front',
+        },
       },
-      modern: { name: 'Warm Modern', text: 'Soft radii, walnut veneer, brass.' },
+      modern: {
+        name: 'Warm Modern',
+        text: 'Soft radii, walnut veneer, brass.',
+        description:
+          'Rounded ends on the island and cabinets, walnut veneer with an open grain. Brass rails and pulls are left unlacquered and darken over time, as in old houses.',
+        coverAlt: 'A Warm Modern kitchen: a walnut island with rounded corners and a brass pendant',
+        detailAlts: {
+          '0': 'The rounded end of a walnut island with a brass rail',
+          '1': 'A brass globe pendant in front of a walnut front',
+        },
+      },
       neoclassic: {
         name: 'Neoclassic',
         text: 'Panelled fronts, hand-painted finish, marble.',
+        description:
+          'Panelled fronts are hand-painted in several coats; cornices and pilasters are made to your measurements. Worktop and splashback are cut from one marble slab with matched veining.',
+        coverAlt: 'A Neoclassic kitchen: light panelled fronts and a marble worktop',
+        detailAlts: {
+          '0': 'Close-up of a hand-painted panelled front',
+          '1': 'Close-up of the veining in a marble worktop',
+        },
       },
     },
     more: 'Details',
@@ -62,12 +86,25 @@ export const en: Dict = {
     title: 'Wood and stone from one workshop',
     lead: 'We cut the stone and plane the wood ourselves, so the island and the worktop are one piece, with no gaps and no fitting on site.',
     scenes: {
-      oak: { name: 'Oak', text: 'solid wood, oil and wax finish.' },
-      travertine: { name: 'Travertine', text: 'open pores, hand-sanded.' },
-      brass: { name: 'Brass', text: 'left unlacquered, it develops a patina over time.' },
+      oak: {
+        name: 'Oak',
+        text: 'solid wood, oil and wax finish.',
+        alt: 'Macro shot of solid oak with an oil and wax finish',
+      },
+      travertine: {
+        name: 'Travertine',
+        text: 'open pores, hand-sanded.',
+        alt: 'Macro shot of travertine with open pores',
+      },
+      brass: {
+        name: 'Brass',
+        text: 'left unlacquered, it develops a patina over time.',
+        alt: 'Macro shot of unlacquered brass with an early patina',
+      },
       hardware: {
         name: 'Hardware',
         text: 'mechanisms from premium European makers, with soft closing.',
+        alt: 'Close-up of a soft-close hinge mechanism',
       },
     },
     samplesLink: 'Order samples',

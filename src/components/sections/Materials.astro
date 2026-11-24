@@ -1,0 +1,155 @@
+---
+/**
+ * Блок 4 — материалы (brief.md §5): four macro scenes on the graphite background.
+ * `.on-dark` swaps the text/link/focus roles (#C9CFB4 links, #F4F1EA focus ring).
+ * No hardware or appliance brands are named (§5). Images are neutral placeholders
+ * (TODO-asset, credits.md) until the client's generated macro frames arrive.
+ * Desktop parallax (§6) belongs to the motion task, not here.
+ */
+import { Picture } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import { getDict, type Lang } from '../../i18n';
+import oak from '../../assets/img/materials/oak.jpg';
+import travertine from '../../assets/img/materials/travertine.jpg';
+import brass from '../../assets/img/materials/brass.jpg';
+import hardware from '../../assets/img/materials/hardware.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const t = getDict(Astro.props.lang).materials;
+const scenes = [
+  ['oak', oak],
+  ['travertine', travertine],
+  ['brass', brass],
+  ['hardware', hardware],
+] as const;
+// 1 column < 640 px, 2 columns < 1024 px, 4 columns from 1024 px in a 1320 px container.
+const SIZES = '(min-width: 1400px) 312px, (min-width: 1024px) 23vw, (min-width: 640px) 46vw, 100vw';
+---
+<section id="materials" class="section materials on-dark" aria-labelledby="materials-title">
+  <div class="container">
+    <div class="materials__head">
+      <h2 id="materials-title" class="materials__title">{t.title}</h2>
+      <p class="materials__lead">{t.lead}</p>
+    </div>
+
+    <ul class="materials__grid" role="list">
+      {scenes.map(([key, src]) => {
+        const scene = t.scenes[key];
+        return (
+          <li class="material" data-material={key}>
+            <figure class="material__figure">
+              <div class="material__media">
+                <Picture
+                  src={src}
+                  alt={scene.alt}
+                  formats={['avif', 'webp']}
+                  widths={[400, 600, 800, 1000]}
+                  sizes={SIZES}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption class="material__caption">
+                <h3 class="material__name">{scene.name}</h3>
+                <p class="material__text">{scene.text}</p>
+              </figcaption>
+            </figure>
+          </li>
+        );
+      })}
+    </ul>
+
+    <div class="materials__samples">
+      <Button variant="link" data-open-modal="samples" aria-haspopup="dialog">{t.samplesLink}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .materials__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem var(--grid-gap);
+    margin-bottom: clamp(3rem, 2rem + 4vw, 5.5rem);
+  }
+  .materials__title {
+    max-width: 12em;
+  }
+  .materials__lead {
+    max-width: 34rem;
+    color: var(--c-muted);
+  }
+
+  .materials__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem) var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .material__figure {
+    margin: 0;
+  }
+  .material__media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #2f2d29;
+  }
+  .material__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .material__caption {
+    display: grid;
+    gap: 0.375rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+  .material__text {
+    max-width: 22rem;
+    color: var(--c-muted);
+  }
+
+  .materials__samples {
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+  .materials__samples :global(.btn) {
+    margin-inline-start: -0.125rem;
+  }
+
+  @media (min-width: 640px) {
+    .materials__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .material__media {
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  /* Four scenes in a row; the 2nd and 4th sit lower for a calmer, staggered rhythm. */
+  @media (min-width: 1024px) {
+    .materials__head {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: end;
+    }
+    .materials__title {
+      grid-column: 1 / span 6;
+    }
+    .materials__lead {
+      grid-column: 8 / -1;
+    }
+    .materials__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .material:nth-child(even) {
+      margin-top: clamp(3rem, 1rem + 4vw, 5rem);
+    }
+  }
+</style>

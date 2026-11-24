@@ -1,0 +1,284 @@
+---
+/**
+ * Блок 3 — коллекции (brief.md §5). Three cards; «Подробнее» expands 2 photos and a
+ * description in place (no separate pages). Each panel follows its card in the DOM, so
+ * reading and focus order stay card → its details. From 768 px the cards share a row and
+ * the open panel spans the full width under it (grid auto-placement).
+ * Motion (§6): height is never animated — the panel appears at full height at once and
+ * its content fades/rises with opacity + transform; nothing moves under reduced motion.
+ * Without JS every panel is shown and the toggles are hidden.
+ * Images are local placeholders (TODO-asset, credits.md) until stock is approved.
+ */
+import { Picture } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import { getDict, type Lang } from '../../i18n';
+import geometryCover from '../../assets/img/collections/geometry-cover.jpg';
+import geometry1 from '../../assets/img/collections/geometry-detail-1.jpg';
+import geometry2 from '../../assets/img/collections/geometry-detail-2.jpg';
+import modernCover from '../../assets/img/collections/modern-cover.jpg';
+import modern1 from '../../assets/img/collections/modern-detail-1.jpg';
+import modern2 from '../../assets/img/collections/modern-detail-2.jpg';
+import neoclassicCover from '../../assets/img/collections/neoclassic-cover.jpg';
+import neoclassic1 from '../../assets/img/collections/neoclassic-detail-1.jpg';
+import neoclassic2 from '../../assets/img/collections/neoclassic-detail-2.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const t = getDict(Astro.props.lang).collections;
+
+const images = {
+  geometry: { cover: geometryCover, details: [geometry1, geometry2] },
+  modern: { cover: modernCover, details: [modern1, modern2] },
+  neoclassic: { cover: neoclassicCover, details: [neoclassic1, neoclassic2] },
+} as const;
+const keys = ['geometry', 'modern', 'neoclassic'] as const;
+
+const FORMATS = ['avif', 'webp'] as const;
+// One column below 768 px, three from 768 px inside a 1320 px container.
+const COVER_SIZES = '(min-width: 1400px) 424px, (min-width: 768px) 31vw, 100vw';
+const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 100vw';
+---
+<section id="collections" class="section collections" aria-labelledby="collections-title" data-collections>
+  <div class="container">
+    <h2 id="collections-title" class="collections__title">{t.title}</h2>
+
+    <div class="collections__grid">
+      {keys.map((key) => {
+        const item = t.items[key];
+        const img = images[key];
+        const nameId = `collection-${key}-name`;
+        const panelId = `collection-${key}-details`;
+        return (
+          <>
+            <article class="collection" data-collection={key}>
+              <div class="collection__media">
+                <Picture
+                  src={img.cover}
+                  alt={item.coverAlt}
+                  formats={[...FORMATS]}
+                  widths={[400, 640, 880, 1200]}
+                  sizes={COVER_SIZES}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <h3 id={nameId} class="collection__name">{item.name}</h3>
+              <p class="collection__text">{item.text}</p>
+              <Button
+                variant="link"
+                class="collection__toggle"
+                aria-expanded="false"
+                aria-controls={panelId}
+                aria-describedby={nameId}
+                data-collection-toggle
+                data-label-more={t.more}
+                data-label-less={t.less}
+              >
+                {t.more}
+              </Button>
+            </article>
+            <div
+              id={panelId}
+              class="collection__panel"
+              role="region"
+              aria-labelledby={nameId}
+              data-collection-panel
+              hidden
+            >
+              <div class="collection__panel-inner">
+                <p class="collection__panel-name" aria-hidden="true">{item.name}</p>
+                <p class="collection__description" data-collection-description>{item.description}</p>
+                <div class="collection__photos">
+                  {img.details.map((src, i) => (
+                    <Picture
+                      src={src}
+                      alt={item.detailAlts[String(i) as '0' | '1']}
+                      formats={[...FORMATS]}
+                      widths={[480, 720, 960, 1200]}
+                      sizes={DETAIL_SIZES}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      })}
+    </div>
+
+    <div class="collections__catalog">
+      <Button variant="link" data-open-modal="catalog" aria-haspopup="dialog">{t.catalogLink}</Button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initCollections } from '../../scripts/collections';
+  const root = document.querySelector<HTMLElement>('[data-collections]');
+  if (root) initCollections(root);
+</script>
+
+<style>
+  .collections__title {
+    max-width: 14em;
+    margin-bottom: clamp(2.5rem, 1.5rem + 3.5vw, 5rem);
+  }
+
+  .collections__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--grid-gap);
+    row-gap: clamp(3rem, 2rem + 3vw, 4rem);
+  }
+
+  .collection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .collection__media {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--c-hairline);
+  }
+  .collection__media :global(img),
+  .collection__photos :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .collection__name {
+    margin-top: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+  }
+
+  .collection__text {
+    max-width: 24rem;
+    margin-top: 0.5rem;
+    color: var(--c-muted);
+  }
+
+  .collection :global(.collection__toggle) {
+    margin-top: 0.75rem;
+    margin-inline-start: -0.125rem;
+  }
+  /* Arrow turns down while open: transform only. */
+  .collection :global(.collection__toggle[aria-expanded='true'] .btn__arrow) {
+    transform: rotate(90deg);
+  }
+
+  /* No JS: details are simply shown and the toggles have nothing to do. */
+  :global(html:not(.js)) .collection__panel[hidden] {
+    display: block;
+  }
+  :global(html:not(.js)) .collection :global(.collection__toggle) {
+    display: none;
+  }
+
+  .collection__panel {
+    margin-top: calc(-1 * clamp(1.5rem, 1rem + 1.5vw, 2rem));
+  }
+  .collection__panel-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem var(--grid-gap);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+  .collection__panel-name {
+    display: none;
+  }
+  .collection__description {
+    max-width: 34rem;
+  }
+  .collection__photos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--grid-gap);
+  }
+  .collection__photos :global(picture) {
+    display: block;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--c-hairline);
+  }
+
+  /* Content of a freshly opened panel fades and rises once; the height is instant. */
+  :global(html.js) .collection__panel:not([hidden]) .collection__panel-inner {
+    animation: collection-reveal var(--dur-expand) var(--ease-out) both;
+  }
+  @keyframes collection-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .collections__catalog {
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+
+  @media (min-width: 640px) {
+    .collection__photos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Cards in one row; each panel takes its own full-width row below them. */
+  @media (min-width: 768px) {
+    .collections__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: 0;
+    }
+    .collection {
+      grid-row: 1;
+    }
+    .collection__panel {
+      grid-column: 1 / -1;
+      margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+    }
+    .collection__panel-name {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .collection__panel-inner {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: start;
+      padding-top: 2.5rem;
+    }
+    .collection__panel-name,
+    .collection__description {
+      grid-column: 1 / span 4;
+    }
+    .collection__description {
+      grid-row: 2;
+    }
+    .collection__photos {
+      grid-column: 5 / -1;
+      grid-row: 1 / span 3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .collection__panel:not([hidden]) .collection__panel-inner {
+      animation: none;
+    }
+  }
+</style>

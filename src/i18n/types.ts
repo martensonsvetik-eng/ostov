@@ -28,7 +28,10 @@ export interface Dict {
   facts: { label: string; items: R<Idx4, { title: string; text: string }> };
   collections: {
     title: string;
-    items: R<'geometry' | 'modern' | 'neoclassic', { name: string; text: string }>;
+    items: R<
+      'geometry' | 'modern' | 'neoclassic',
+      { name: string; text: string; description: string; coverAlt: string; detailAlts: R<'0' | '1'> }
+    >;
     more: string;
     less: string;
     catalogLink: string;
@@ -36,7 +39,7 @@ export interface Dict {
   materials: {
     title: string;
     lead: string;
-    scenes: R<'oak' | 'travertine' | 'brass' | 'hardware', { name: string; text: string }>;
+    scenes: R<'oak' | 'travertine' | 'brass' | 'hardware', { name: string; text: string; alt: string }>;
     samplesLink: string;
   };
   projects: {

@@ -15,3 +15,14 @@
 ## Шрифты
 
 - Cormorant Garamond, Manrope — SIL Open Font License 1.1, через `@fontsource`.
+
+## Заглушки (TODO-asset)
+
+Генерируются локально, без загрузок: `node scripts/gen-placeholder-images.mjs` (sharp, детерминированный шум). Это тональные абстракции в палитре, а не фотографии. Подписи `alt` в `src/i18n/*.ts` описывают будущий кадр: сверить с ним при замене.
+
+| Файл | Где | Статус |
+|---|---|---|
+| `src/assets/img/collections/geometry-cover.jpg`, `geometry-detail-1.jpg`, `geometry-detail-2.jpg` | Блок 3, «Тихая геометрия» | TODO-asset: стоковое фото (Unsplash/Pexels) на утверждении |
+| `src/assets/img/collections/modern-cover.jpg`, `modern-detail-1.jpg`, `modern-detail-2.jpg` | Блок 3, «Тёплый модерн» | TODO-asset: стоковое фото на утверждении |
+| `src/assets/img/collections/neoclassic-cover.jpg`, `neoclassic-detail-1.jpg`, `neoclassic-detail-2.jpg` | Блок 3, «Неоклассика» | TODO-asset: стоковое фото на утверждении |
+| `src/assets/img/materials/oak.jpg`, `travertine.jpg`, `brass.jpg`, `hardware.jpg` | Блок 4, материалы | TODO-asset: макрокадры генерирует заказчик (brief.md §11); при замене указать, что изображения сгенерированы, и проверить на артефакты |
