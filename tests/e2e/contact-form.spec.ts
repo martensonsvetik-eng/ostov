@@ -48,7 +48,7 @@ test('блок 7: заголовок, вилка цен и карточка ар
   await expect(person).toContainText('Вера Ланская');
   await expect(person).toContainText('ведущий архитектор');
   await expect(person).toContainText('15 лет в интерьерах. Ведёт ваш проект от эскиза до монтажа.');
-  await expect(person.locator('img')).toHaveAttribute('alt', 'Портрет Веры Ланской, ведущего архитектора');
+  await expect(person.locator('img')).toHaveAttribute('alt', 'Руки архитектора чертят план за рабочим столом');
   // «над формой»: вилка цен и карточка выше верхнего края формы на любой ширине
   const formTop = (await form(page).boundingBox())!.y;
   for (const el of [price, person]) {

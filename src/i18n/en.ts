@@ -49,10 +49,10 @@ export const en: Dict = {
         text: 'Strict planes, concealed handles, oak and graphite.',
         description:
           'Handleless fronts open with a push or through a shadow gap. Oiled oak and graphite lacquer, a travertine worktop — everything in one plane, nothing protruding.',
-        coverAlt: 'A Quiet Geometry kitchen: handleless graphite fronts under an oak worktop',
+        coverAlt: 'Quiet Geometry kitchen: handleless black-stained oak fronts beside a natural oak tall unit',
         detailAlts: {
-          '0': 'A shadow gap instead of handles on graphite fronts',
-          '1': 'Close-up of an oak worktop above a graphite front',
+          '0': 'Leather bar stools at the island and handleless black oak drawers',
+          '1': 'Aisle between the island and black oak tall units, stone worktops',
         },
       },
       modern: {
@@ -60,10 +60,10 @@ export const en: Dict = {
         text: 'Soft radii, walnut veneer, brass.',
         description:
           'Rounded ends on the island and cabinets, walnut veneer with an open grain. Brass rails and pulls are left unlacquered and darken over time, as in old houses.',
-        coverAlt: 'A Warm Modern kitchen: a walnut island with rounded corners and a brass pendant',
+        coverAlt: 'Warm Modern kitchen: walnut-veneer island and cabinets, a white worktop and a hammered brass pendant',
         detailAlts: {
-          '0': 'The rounded end of a walnut island with a brass rail',
-          '1': 'A brass globe pendant in front of a walnut front',
+          '0': 'A hammered brass pendant against walnut wall cabinets',
+          '1': 'A walnut island with wooden stools by a garden window',
         },
       },
       neoclassic: {
@@ -71,10 +71,10 @@ export const en: Dict = {
         text: 'Panelled fronts, hand-painted finish, marble.',
         description:
           'Panelled fronts are hand-painted in several coats; cornices and pilasters are made to your measurements. Worktop and splashback are cut from one marble slab with matched veining.',
-        coverAlt: 'A Neoclassic kitchen: light panelled fronts and a marble worktop',
+        coverAlt: 'Neoclassic kitchen: light grey panelled fronts, an island with a marble top and a window with sheer curtains',
         detailAlts: {
-          '0': 'Close-up of a hand-painted panelled front',
-          '1': 'Close-up of the veining in a marble worktop',
+          '0': 'Panelled fronts and a marble splashback under a pendant lamp',
+          '1': 'Corner of the island with a marble top beside panelled fronts',
         },
       },
     },
@@ -89,22 +89,22 @@ export const en: Dict = {
       oak: {
         name: 'Oak',
         text: 'solid wood, oil and wax finish.',
-        alt: 'Macro shot of solid oak with an oil and wax finish',
+        alt: 'Close-up of oiled oak grain',
       },
       travertine: {
         name: 'Travertine',
         text: 'open pores, hand-sanded.',
-        alt: 'Macro shot of travertine with open pores',
+        alt: 'Close-up of a travertine edge with open pores',
       },
       brass: {
         name: 'Brass',
         text: 'left unlacquered, it develops a patina over time.',
-        alt: 'Macro shot of unlacquered brass with an early patina',
+        alt: 'Close-up of a brass knob on a light cabinet front',
       },
       hardware: {
         name: 'Hardware',
         text: 'mechanisms from premium European makers, with soft closing.',
-        alt: 'Close-up of a soft-close hinge mechanism',
+        alt: 'A full-extension drawer with a dish organiser',
       },
     },
     samplesLink: 'Order samples',
@@ -120,23 +120,23 @@ export const en: Dict = {
       quoteCite: 'The client',
       planLabel: 'Floor plan',
       planAlt: 'Kitchen floor plan diagram for the House Among the Pines project',
-      imageAlt: 'Kitchen in a country house: an oak island with a travertine worktop, pines outside the window',
+      imageAlt: 'Kitchen in a country house: an island with a pale stone top, pines beyond the triangular windows',
     },
     cards: {
       '0': {
         name: 'Apartment on Patriarshy',
         meta: 'Moscow · €33 000 · 13 weeks',
-        imageAlt: 'Kitchen in a high-ceilinged apartment: light fronts along the wall and a narrow island',
+        imageAlt: 'Compact kitchen: dark walnut-veneer units with built-in appliances and a terrazzo island',
       },
       '1': {
         name: 'Kitchen-living room in Jūrmala',
         meta: 'Latvia · €78 000 · 18 weeks · project run by video call',
-        imageAlt: 'Bright kitchen-living room by the sea: a long walnut island, a dining table and large windows',
+        imageAlt: 'Bright kitchen-living room: a white fluted island, a wall of walnut units, a dining table and an armchair',
       },
       '2': {
         name: 'Loft on Vasilievsky',
         meta: 'Saint Petersburg · €28 000 · 12 weeks · with a guest designer',
-        imageAlt: 'Loft kitchen: graphite fronts against a brick wall, brass pendant lights over the worktop',
+        imageAlt: 'Loft kitchen: a concrete ceiling with track lights, a wood-clad island with a marble top and a long dining table',
       },
     },
     metaLabels: { place: 'Location', budget: 'Budget', duration: 'Timeline' },
@@ -185,7 +185,7 @@ export const en: Dict = {
     personName: 'Vera Lanskaya',
     personRole: 'lead architect',
     personText: '15 years in interiors. Leads your project from sketch to installation.',
-    personAlt: 'Portrait of Vera Lanskaya, lead architect',
+    personAlt: "An architect's hands drafting a plan at the desk",
     showroomLabel: 'Showroom',
     showroomAddress: 'Moscow, Vymyshlennaya st., 1',
     showroomHours: 'Mon–Sat 11:00–20:00, by appointment',
