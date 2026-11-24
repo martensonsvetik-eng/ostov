@@ -18,6 +18,8 @@ interface Props {
   hint?: string;
   error?: string;
   inline?: boolean;
+  /** Id prefix for options and messages; set it when two forms on a page share a field name. */
+  id?: string;
 }
 
 const {
@@ -30,9 +32,10 @@ const {
   hint,
   error,
   inline = false,
+  id,
 } = Astro.props;
 
-const base = `c-${name}`;
+const base = id ?? `c-${name}`;
 const hintId = `${base}-hint`;
 const errorId = `${base}-error`;
 const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(' ') || undefined;
@@ -59,13 +62,13 @@ const describedBy = [hint && hintId, error && errorId].filter(Boolean).join(' ')
       ))
     }
   </div>
-  <p class="choice__error" id={errorId} hidden={!error}>
+  <p class="choice__error" id={errorId} data-error-for={name} hidden={!error}>
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
       <circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5" />
       <path d="M8 4.25v4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
       <circle cx="8" cy="11.4" r="0.95" fill="currentColor" />
     </svg>
-    <span>{error}</span>
+    <span data-error-text>{error}</span>
   </p>
 </fieldset>
 

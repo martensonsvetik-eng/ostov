@@ -26,3 +26,4 @@
 | `src/assets/img/collections/modern-cover.jpg`, `modern-detail-1.jpg`, `modern-detail-2.jpg` | Блок 3, «Тёплый модерн» | TODO-asset: стоковое фото на утверждении |
 | `src/assets/img/collections/neoclassic-cover.jpg`, `neoclassic-detail-1.jpg`, `neoclassic-detail-2.jpg` | Блок 3, «Неоклассика» | TODO-asset: стоковое фото на утверждении |
 | `src/assets/img/materials/oak.jpg`, `travertine.jpg`, `brass.jpg`, `hardware.jpg` | Блок 4, материалы | TODO-asset: макрокадры генерирует заказчик (brief.md §11); при замене указать, что изображения сгенерированы, и проверить на артефакты |
+| `src/assets/img/people/vera-lanskaya.jpg` | Блок 7, портрет архитектора (персонаж вымышлен) | TODO-asset: сгенерированный или стоковый портрет (brief.md §6), при замене отметить источник здесь |

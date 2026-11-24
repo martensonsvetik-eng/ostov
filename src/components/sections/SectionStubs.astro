@@ -5,16 +5,17 @@ import type { Lang } from '../../i18n';
 
 interface Props {
   lang: Lang;
+  /** Which stubs to render here (page order: projects, process, contact, pro). */
+  only: ('projects' | 'process' | 'pro')[];
 }
 const t = getDict(Astro.props.lang);
 const sections = [
   ['projects', t.projects.title],
   ['process', t.process.title],
   ['pro', t.pro.title],
-  ['contact', t.contact.title],
 ] as const;
 ---
-{sections.map(([id, title]) => (
+{sections.filter(([id]) => Astro.props.only.includes(id)).map(([id, title]) => (
   <section id={id} class="section stub" aria-labelledby={`${id}-title`}>
     <div class="container"><h2 id={`${id}-title`}>{title}</h2></div>
   </section>

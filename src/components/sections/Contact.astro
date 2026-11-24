@@ -1,0 +1,209 @@
+---
+/**
+ * Блок 7 — «Шоурум и запись» (brief.md §5): heading, price range with breakdown,
+ * the lead architect's card, showroom address as text (no map, by brief) and the
+ * main demo form (§8.1). Price and architect sit above the form at every width;
+ * on desktop the showroom address takes the left column next to the form.
+ * The portrait is a TODO-asset placeholder (credits.md).
+ */
+import { Picture } from 'astro:assets';
+import ContactForm from '../forms/ContactForm.astro';
+import { getDict, type Lang } from '../../i18n';
+import portrait from '../../assets/img/people/vera-lanskaya.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = getDict(lang).contact;
+const priceItems = t.priceDetails
+  .replace(/\.$/, '')
+  .split(' · ')
+  .map((s) => s.trim());
+---
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container contact__grid">
+    <div class="contact__head">
+      <h2 id="contact-title" class="contact__title">{t.title}</h2>
+      <div class="contact__price" data-price>
+        <p class="eyebrow">{t.priceLabel}</p>
+        <p class="contact__price-value">{t.price}</p>
+        <ul class="contact__price-list" role="list">
+          {priceItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <figure class="person" data-person>
+      <div class="person__media">
+        <Picture
+          src={portrait}
+          alt={t.personAlt}
+          formats={['avif', 'webp']}
+          widths={[160, 240, 320]}
+          sizes="(min-width: 1024px) 160px, 120px"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <figcaption class="person__text">
+        <p class="person__name">{t.personName}</p>
+        <p class="person__role">{t.personRole}</p>
+        <p class="person__about">{t.personText}</p>
+      </figcaption>
+    </figure>
+
+    <div class="contact__form">
+      <ContactForm lang={lang} />
+    </div>
+
+    <div class="showroom">
+      <h3 class="eyebrow showroom__label">{t.showroomLabel}</h3>
+      <p class="showroom__address">{t.showroomAddress}</p>
+      <p class="showroom__hours">{t.showroomHours}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2.5rem, 2rem + 2vw, 3.5rem) var(--grid-gap);
+    grid-template-areas:
+      'head'
+      'person'
+      'form'
+      'showroom';
+  }
+
+  .contact__head {
+    grid-area: head;
+    display: grid;
+    gap: 2rem;
+  }
+  .person {
+    grid-area: person;
+  }
+  .contact__form {
+    grid-area: form;
+    min-width: 0;
+  }
+  .showroom {
+    grid-area: showroom;
+  }
+
+  .contact__title {
+    max-width: 12em;
+  }
+
+  .contact__price {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 38rem;
+  }
+  .contact__price p {
+    margin: 0;
+  }
+  .contact__price-value {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--c-text);
+  }
+  .contact__price-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.25rem;
+    font-size: var(--fs-caption);
+    line-height: 1.5;
+    color: var(--c-muted);
+  }
+  .contact__price-list li::before {
+    content: '— ';
+    color: var(--c-line);
+  }
+
+  .person {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+    margin: 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+  .person__media {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #d8cfc0;
+  }
+  .person__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .person__text p {
+    margin: 0;
+  }
+  .person__name {
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+  .person__role {
+    font-size: var(--fs-caption);
+    color: var(--c-muted);
+    margin-bottom: 0.75rem !important;
+  }
+  .person__about {
+    max-width: 28em;
+  }
+
+  .showroom {
+    display: grid;
+    gap: 0.375rem;
+    align-content: start;
+  }
+  .showroom p,
+  .showroom__label {
+    margin: 0;
+  }
+  .showroom__label {
+    font-family: var(--font-sans);
+    margin-bottom: 0.375rem;
+  }
+  .showroom__address {
+    font-weight: 500;
+  }
+  .showroom__hours {
+    color: var(--c-muted);
+  }
+
+  @media (min-width: 1024px) {
+    .contact__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-areas:
+        'head head head head head head head . person person person person'
+        'showroom showroom showroom showroom . form form form form form form form';
+      align-items: end;
+    }
+    .person {
+      grid-template-columns: 10rem minmax(0, 1fr);
+      padding-top: 0;
+      border-top: 0;
+    }
+    .contact__form,
+    .showroom {
+      align-self: start;
+    }
+    .showroom {
+      position: sticky;
+      top: calc(var(--header-h, 4.5rem) + 2rem);
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--c-hairline);
+    }
+  }
+</style>

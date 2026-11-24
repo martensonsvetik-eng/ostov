@@ -183,6 +183,7 @@ export const en: Dict = {
   },
   forms: {
     demoNote: 'Demo form: no data is sent',
+    noscript: 'The demo form only works with JavaScript enabled and sends nothing',
     loading: 'Sending…',
     close: 'Close',
     back: 'Back',

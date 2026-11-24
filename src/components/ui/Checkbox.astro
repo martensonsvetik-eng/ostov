@@ -1,0 +1,133 @@
+---
+/**
+ * Single standalone checkbox (consents, brief.md §8.1: each consent is its own field).
+ * Same look as the checkbox options in Choice.astro; 44 px row; error = text + icon +
+ * colour, linked with aria-describedby. Runtime errors are driven by src/scripts/form.ts
+ * through the data-error-for / data-error-text hooks.
+ */
+interface Props {
+  name: string;
+  label: string;
+  value?: string;
+  required?: boolean;
+  checked?: boolean;
+  error?: string;
+  id?: string;
+}
+
+const { name, label, value = 'yes', required = false, checked = false, error, id = `cb-${name}` } = Astro.props;
+const errorId = `${id}-error`;
+---
+<div class="checkbox">
+  <label class="checkbox__option" for={id}>
+    <input
+      class="checkbox__input"
+      type="checkbox"
+      id={id}
+      name={name}
+      value={value}
+      required={required}
+      checked={checked}
+      aria-invalid={error ? 'true' : undefined}
+      aria-describedby={error ? errorId : undefined}
+    />
+    <span class="checkbox__label">{label}</span>
+  </label>
+  <p class="checkbox__error" id={errorId} data-error-for={name} hidden={!error}>
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+      <path d="M8 4.25v4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      <circle cx="8" cy="11.4" r="0.95" fill="currentColor" />
+    </svg>
+    <span data-error-text>{error}</span>
+  </p>
+</div>
+
+<style>
+  .checkbox__option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: var(--hit);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .checkbox__input {
+    appearance: none;
+    flex: none;
+    display: grid;
+    place-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    background: var(--c-bg-2);
+    cursor: pointer;
+  }
+
+  .checkbox__option:hover .checkbox__input {
+    border-color: var(--c-text);
+  }
+
+  .checkbox__input:focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 3px;
+  }
+
+  .checkbox__input::before {
+    content: '';
+    width: 0.7rem;
+    height: 0.4rem;
+    margin-top: -0.15rem;
+    border-left: 1.5px solid var(--c-on-accent);
+    border-bottom: 1.5px solid var(--c-on-accent);
+    transform: rotate(-45deg) scale(0);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  .checkbox__input:checked {
+    border-color: var(--c-accent);
+    background: var(--c-accent);
+  }
+
+  .checkbox__input:checked::before {
+    transform: rotate(-45deg) scale(1);
+  }
+
+  .checkbox__input[aria-invalid='true'] {
+    border-color: var(--c-error);
+    box-shadow: inset 0 0 0 1px var(--c-error);
+  }
+
+  .checkbox__label {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .checkbox__error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: var(--fs-caption);
+    line-height: 1.45;
+    color: var(--c-error);
+  }
+
+  .checkbox__error[hidden] {
+    display: none;
+  }
+
+  .checkbox__error svg {
+    flex: none;
+    margin-top: 0.1em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .checkbox__input::before {
+      transition: none;
+    }
+  }
+</style>

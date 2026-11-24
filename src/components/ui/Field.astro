@@ -45,13 +45,13 @@ const errorId = `${id}-error`;
     aria-describedby={error ? errorId : undefined}
     {...rest}
   />
-  <p class="field__error" id={errorId} hidden={!error}>
+  <p class="field__error" id={errorId} data-error-for={name} hidden={!error}>
     <svg class="field__icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
       <circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5" />
       <path d="M8 4.25v4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
       <circle cx="8" cy="11.4" r="0.95" fill="currentColor" />
     </svg>
-    <span class="field__error-text">{error}</span>
+    <span class="field__error-text" data-error-text>{error}</span>
   </p>
 </div>
 
@@ -90,7 +90,9 @@ const errorId = `${id}-error`;
     border-color: var(--c-accent);
   }
 
-  .field--invalid .field__input {
+  /* aria-invalid is also toggled at runtime by src/scripts/form.ts */
+  .field--invalid .field__input,
+  .field__input[aria-invalid='true'] {
     border-color: var(--c-error);
     box-shadow: inset 0 0 0 1px var(--c-error);
   }

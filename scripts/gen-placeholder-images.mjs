@@ -1,10 +1,11 @@
-// Generates local placeholder images for blocks 3–4 (Collections, Materials).
+// Generates local placeholder images for blocks 3, 4 and 7 (Collections, Materials, architect portrait).
 // No downloads: warm tonal abstract compositions in the brief.md §6 palette that
 // hint at each collection's character, and texture-like macro frames for the
 // four materials. All are TODO-asset in credits.md: collection photos will be
 // replaced with approved stock, material frames with the client's generated macro.
 // Deterministic (seeded noise), so re-running gives identical files.
-// Usage: node scripts/gen-placeholder-images.mjs
+// Usage: node scripts/gen-placeholder-images.mjs [file-prefix]
+//   e.g. `node scripts/gen-placeholder-images.mjs people/` regenerates only the portrait.
 import sharp from 'sharp';
 import { mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -175,7 +176,25 @@ const materials = {
     [{ seed: 47, sx: 120, sy: 1, strength: 0.3 }]],
 };
 
+/* ---------- Block 7: architect portrait 4:5 (TODO-asset) ---------- */
+// Abstract head-and-shoulders silhouette against a warm wall, light from the left.
+const PW = 800, PH = 1000;
+const people = {
+  'vera-lanskaya': [PW, PH, svgWrap(PW, PH, `
+    <rect width="${PW}" height="${PH}" fill="#d8cfc0"/>
+    <rect x="520" y="0" width="280" height="${PH}" fill="#cdc3b2"/>
+    <path d="M130 1000 C140 800 250 720 400 715 C550 720 660 800 670 1000 Z" fill="#4a4640"/>
+    <path d="M340 640 h120 v110 a60 40 0 0 1 -120 0 Z" fill="#b89a82"/>
+    <ellipse cx="400" cy="480" rx="125" ry="160" fill="#c4a68d"/>
+    <path d="M270 500 C250 330 340 290 410 292 C500 296 560 350 535 520 C520 430 470 380 400 380 C330 382 290 430 270 500 Z" fill="#5a4334"/>
+    <rect width="${PW}" height="${PH}" fill="url(#light)"/>`, light(0.35))],
+};
+
+const only = process.argv[2] ?? '';
+const want = (file) => file.startsWith(only);
 await mkdir(`${root}collections`, { recursive: true });
 await mkdir(`${root}materials`, { recursive: true });
-for (const [name, [w, h, svg, layers]] of Object.entries(collections)) await render(`collections/${name}.jpg`, w, h, svg, layers);
-for (const [name, [w, h, svg, layers]] of Object.entries(materials)) await render(`materials/${name}.jpg`, w, h, svg, layers);
+await mkdir(`${root}people`, { recursive: true });
+for (const [name, [w, h, svg, layers]] of Object.entries(collections)) if (want(`collections/${name}`)) await render(`collections/${name}.jpg`, w, h, svg, layers);
+for (const [name, [w, h, svg, layers]] of Object.entries(materials)) if (want(`materials/${name}`)) await render(`materials/${name}.jpg`, w, h, svg, layers);
+for (const [name, [w, h, svg, layers]] of Object.entries(people)) if (want(`people/${name}`)) await render(`people/${name}.jpg`, w, h, svg, layers);
