@@ -53,6 +53,9 @@ export interface Dict {
       planLabel: string;
       planAlt: string;
       imageAlt: string;
+      /** Label of the group of material hotspots on the lead photo. */
+      hotspotsLabel: string;
+      hotspots: R<'island' | 'fronts' | 'stairs', { title: string; text: string }>;
     };
     cards: R<Idx3, { name: string; meta: string; imageAlt: string }>;
     /** Visually hidden terms for the «place · budget · timing» line. */

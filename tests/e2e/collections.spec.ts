@@ -175,28 +175,107 @@ test('360px: без горизонтальной прокрутки с раск�
 // Раунд 2 (заказчик, 2026-11-24): наведение на карточки коллекций и материалов.
 test.describe('наведение на карточки', () => {
   test.skip(({ viewport }) => (viewport?.width ?? 0) < 1024, 'эффект для устройств с наведением, проверяем на компьютере');
-  const veil = (el: Element) => getComputedStyle(el, '::after').opacity;
+  // Раунд 3: вуаль заменена на круглую метку «Подробнее», которая следует за курсором.
+  const shift = (el: Element) => {
+    const m = new DOMMatrix(getComputedStyle(el).transform);
+    return [Math.round(m.m41), Math.round(m.m42)];
+  };
+  const scaleOf = (el: Element) => new DOMMatrix(getComputedStyle(el).transform).a;
 
-  test('коллекции: фото затемняется при наведении и при фокусе с клавиатуры, текст не трогаем', async ({ page }) => {
+  test('коллекции: вуали нет, метка появляется и следует за курсором, фото приближается', async ({ page }) => {
     await page.goto('/ostov/');
     const card = page.locator('[data-collection]').first();
-    const media = card.locator('.collection__media');
+    const media = card.locator('[data-collection-media]');
+    const cursor = media.locator('[data-collection-cursor]');
+    const badge = media.locator('[data-collection-badge]');
     await card.scrollIntoViewIfNeeded();
-    expect(await media.evaluate(veil)).toBe('0');
-    await media.hover();
-    await expect.poll(() => media.evaluate(veil)).toBe('0.3');
-    expect(await card.locator('.collection__name').evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+    // Ждём конца появления при прокрутке (карточка поднимается на 20 px), чтобы мерить итоговое место.
+    await expect.poll(() => card.evaluate((e) => getComputedStyle(e).transform)).toMatch(/^(none|matrix(1, 0, 0, 1, 0, 0))$/);
+    // Старой вуали больше нет.
+    expect(await media.evaluate((e) => getComputedStyle(e, '::after').content)).toBe('none');
+    await expect(cursor).toHaveAttribute('aria-hidden', 'true');
+    await expect(badge).toHaveText('Подробнее');
+    expect(await badge.evaluate((e) => getComputedStyle(e).opacity)).toBe('0');
+
+    const box = (await media.boundingBox())!;
+    const cx = box.x + box.width / 2;
+    const cy = box.y + box.height / 2;
+    await page.mouse.move(cx - 60, cy - 80);
+    await expect.poll(() => badge.evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+    await expect.poll(() => cursor.evaluate(shift)).toEqual([-60, -80]);
+    await expect.poll(() => media.locator('picture').evaluate(scaleOf)).toBeCloseTo(1.05, 2);
+    // Курсор сдвинулся — метка догоняет его плавно и остаётся внутри фото.
+    await page.mouse.move(cx + 50, cy + 40, { steps: 4 });
+    await expect.poll(() => cursor.evaluate(shift)).toEqual([50, 40]);
+    // У левого края (верх карточки может быть под закреплённой шапкой) метка упирается в отступ 8 px.
+    await page.mouse.move(box.x + 2, cy, { steps: 2 });
+    const ex = box.width / 2 - 48 - 8;
+    await expect
+      .poll(async () => {
+        const [x, y] = await cursor.evaluate(shift);
+        return Math.abs(x! + ex) <= 1 && Math.abs(y!) <= 1;
+      })
+      .toBe(true);
+    const b = (await badge.boundingBox())!;
+    expect(b.x).toBeGreaterThanOrEqual(box.x);
+    expect(b.y).toBeGreaterThanOrEqual(box.y);
+    expect(b.x).toBeCloseTo(box.x + 8, 0);
+    // Текст метки: графит на тёплом белом.
+    expect(await badge.evaluate((e) => [getComputedStyle(e).color, getComputedStyle(e).backgroundColor])).toEqual([
+      'rgb(36, 34, 31)',
+      'rgb(244, 241, 234)',
+    ]);
     await page.mouse.move(0, 0);
-    await expect.poll(() => media.evaluate(veil)).toBe('0');
-    // Клик мышью по «Подробнее» не оставляет фото затемнённым, Tab — затемняет.
-    await card.locator('[data-collection-toggle]').click();
+    await expect.poll(() => badge.evaluate((e) => getComputedStyle(e).opacity)).toBe('0');
+    await expect.poll(() => media.locator('picture').evaluate(scaleOf)).toBe(1);
+  });
+
+  test('коллекции: клик по фото раскрывает и сворачивает подробности, метка меняет текст', async ({ page }) => {
+    await page.goto('/ostov/');
+    const card = page.locator('[data-collection]').nth(1);
+    const media = card.locator('[data-collection-media]');
+    const btn = card.locator('[data-collection-toggle]');
+    const panel = page.locator(`#${await btn.getAttribute('aria-controls')}`);
+    await media.click();
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await expect(panel).toBeVisible();
+    await expect(media.locator('[data-collection-badge]')).toHaveText('Свернуть');
+    await media.click();
+    await expect(btn).toHaveAttribute('aria-expanded', 'false');
+    await expect(panel).toBeHidden();
+    await expect(media.locator('[data-collection-badge]')).toHaveText('Подробнее');
+  });
+
+  test('коллекции: фокус с клавиатуры даёт статичное приближение без метки, клик мышью — нет', async ({ page }) => {
+    await page.goto('/ostov/');
+    const card = page.locator('[data-collection]').first();
+    const pic = card.locator('[data-collection-media] picture');
+    const btn = card.locator('[data-collection-toggle]');
+    await btn.click();
     await page.mouse.move(0, 0);
-    await expect.poll(() => media.evaluate(veil)).toBe('0');
-    await card.locator('[data-collection-toggle]').click();
+    await expect.poll(() => pic.evaluate(scaleOf)).toBe(1);
+    await btn.click();
     await page.keyboard.press('Shift+Tab');
     await page.keyboard.press('Tab');
-    await expect(card.locator('[data-collection-toggle]')).toBeFocused();
-    await expect.poll(() => media.evaluate(veil)).toBe('0.3');
+    await expect(btn).toBeFocused();
+    await expect.poll(() => pic.evaluate(scaleOf)).toBeCloseTo(1.05, 2);
+    expect(await card.locator('[data-collection-badge]').evaluate((e) => getComputedStyle(e).opacity)).toBe('0');
+  });
+
+  test.describe('уменьшение движения', () => {
+    test.use({ reducedMotion: 'reduce' });
+    test('коллекции: метка не следует за курсором, переходов нет', async ({ page }) => {
+      await page.goto('/ostov/');
+      const media = page.locator('[data-collection-media]').first();
+      await media.scrollIntoViewIfNeeded();
+      const box = (await media.boundingBox())!;
+      await page.mouse.move(box.x + 30, box.y + 40);
+      await page.mouse.move(box.x + 60, box.y + 90, { steps: 3 });
+      expect(await media.locator('[data-collection-cursor]').evaluate((e) => getComputedStyle(e).transform)).toBe('none');
+      expect(
+        await media.locator('[data-collection-badge]').evaluate((e) => getComputedStyle(e).transitionDuration),
+      ).toBe('0s');
+    });
   });
 
   test('материалы: рамка приближается, линия прорисовывается, у фото с параллаксом свой transform', async ({ page }) => {

@@ -52,7 +52,7 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
         return (
           <>
             <article class="collection" data-collection={key} data-reveal>
-              <div class="collection__media">
+              <div class="collection__media" data-collection-media>
                 <Picture
                   src={img.cover}
                   alt={item.coverAlt}
@@ -62,6 +62,10 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
                   loading="lazy"
                   decoding="async"
                 />
+                {/* Decorative: keyboard and screen-reader users have the «Подробнее» button. */}
+                <span class="collection__cursor" aria-hidden="true" data-collection-cursor>
+                  <span class="collection__badge" data-collection-badge>{t.more}</span>
+                </span>
               </div>
               <h3 id={nameId} class="collection__name">{item.name}</h3>
               <p class="collection__text">{item.text}</p>
@@ -146,28 +150,66 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
     overflow: hidden;
     background: var(--c-hairline);
   }
-  /* Hover / keyboard focus (client round 2): a graphite veil fades in over the photo.
-     Only opacity animates; the text sits below the photo, so its contrast is untouched. */
+  /* Hover (client round 3): the photo slowly comes closer (1.05, 800 ms) and a round
+     «Подробнее» badge follows the pointer (collections.ts, rAF-lerped translate3d).
+     A click on the photo works like the button. Keyboard focus on the button gives the
+     same zoom, static, without the badge. Only transform and opacity animate. */
   .collection__media {
     position: relative;
   }
-  .collection__media::after {
-    content: '';
+  :global(html.js) .collection__media {
+    cursor: pointer;
+  }
+  .collection__media :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform 800ms var(--ease-out);
+  }
+  .collection__cursor {
     position: absolute;
-    inset: 0;
-    background: var(--c-dark);
-    opacity: 0;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: 96px;
+    height: 96px;
+    margin: -48px 0 0 -48px;
     pointer-events: none;
-    transition: opacity 300ms var(--ease-out);
+  }
+  /* Opaque warm white under graphite text: 14:1 whatever the photo does. */
+  .collection__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--c-bg);
+    color: var(--c-dark);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 300ms var(--ease-out),
+      transform 500ms var(--ease-out);
+  }
+  :global(html:not(.js)) .collection__cursor {
+    display: none;
   }
   @media (hover: hover) and (pointer: fine) {
-    .collection:hover .collection__media::after {
-      opacity: 0.3;
+    .collection__media:hover :global(picture) {
+      transform: scale(1.05);
+    }
+    .collection__media:hover .collection__badge {
+      opacity: 1;
+      transform: none;
     }
   }
-  /* Keyboard only: a mouse click on «Подробнее» must not leave the photo veiled. */
-  .collection:has(:focus-visible) .collection__media::after {
-    opacity: 0.3;
+  /* Keyboard only: a mouse click on «Подробнее» must not leave the photo zoomed. */
+  .collection:has(:focus-visible) .collection__media :global(picture) {
+    transform: scale(1.05);
   }
   .collection__media :global(img),
   .collection__photos :global(img) {
@@ -303,7 +345,8 @@ const DETAIL_SIZES = '(min-width: 1400px) 420px, (min-width: 1024px) 31vw, (min-
     :global(html.js) .collection__panel:not([hidden]) .collection__panel-inner {
       animation: none;
     }
-    .collection__media::after {
+    .collection__media :global(picture),
+    .collection__badge {
       transition: none;
     }
   }

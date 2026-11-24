@@ -121,6 +121,12 @@ export const en: Dict = {
       planLabel: 'Floor plan',
       planAlt: 'Kitchen floor plan diagram for the House Among the Pines project',
       imageAlt: 'Kitchen in a country house: an island with a pale stone top, pines beyond the triangular windows',
+      hotspotsLabel: 'Materials in the photo',
+      hotspots: {
+        island: { title: 'Island — pale stone', text: 'Top and side cut from one slab, with no visible joint.' },
+        fronts: { title: 'Fronts — walnut veneer', text: 'Open grain, oil and wax finish, dark steel profile handles.' },
+        stairs: { title: 'Staircase — solid oak', text: 'Treads made in the same workshop as the kitchen.' },
+      },
     },
     cards: {
       '0': {
