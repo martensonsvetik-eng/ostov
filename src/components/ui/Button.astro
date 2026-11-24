@@ -1,0 +1,193 @@
+---
+/**
+ * Button hierarchy (brief.md §7): primary — solid olive, secondary — outline,
+ * link — text link with an arrow. Renders <a> when `href` is given, <button> otherwise.
+ * `loading` disables the button and sets aria-busy (submit buttons only).
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'button'> & HTMLAttributes<'a'>, 'type'> & {
+  variant: 'primary' | 'secondary' | 'link';
+  href?: string;
+  type?: 'button' | 'submit';
+  loading?: boolean;
+  disabled?: boolean;
+};
+
+const {
+  variant,
+  href,
+  type = 'button',
+  loading = false,
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = ['btn', `btn--${variant}`, className].filter(Boolean).join(' ');
+const inactive = disabled || loading;
+---
+{
+  href !== undefined ? (
+    <a
+      class={classes}
+      data-variant={variant}
+      href={inactive ? undefined : href}
+      aria-disabled={inactive ? 'true' : undefined}
+      role={inactive ? 'link' : undefined}
+      {...rest}
+    >
+      <span class="btn__label"><slot /></span>
+      {variant === 'link' && <svg class="btn__arrow" width="18" height="10" viewBox="0 0 18 10" fill="none" aria-hidden="true" focusable="false"><path d="M0 5h16M12 1l4 4-4 4" stroke="currentColor" stroke-width="1.25"/></svg>}
+    </a>
+  ) : (
+    <button
+      class={classes}
+      data-variant={variant}
+      type={type}
+      disabled={inactive}
+      aria-busy={loading ? 'true' : undefined}
+      {...rest}
+    >
+      {loading && <span class="btn__spinner" aria-hidden="true" />}
+      <span class="btn__label"><slot /></span>
+      {variant === 'link' && <svg class="btn__arrow" width="18" height="10" viewBox="0 0 18 10" fill="none" aria-hidden="true" focusable="false"><path d="M0 5h16M12 1l4 4-4 4" stroke="currentColor" stroke-width="1.25"/></svg>}
+    </button>
+  )
+}
+
+
+<style>
+  .btn {
+    --btn-bg: transparent;
+    --btn-fg: var(--c-text);
+    --btn-border: transparent;
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-width: var(--hit);
+    min-height: 3.25rem;
+    padding: 0 1.75rem;
+    border: 1px solid var(--btn-border);
+    border-radius: var(--radius);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    font: 500 0.9375rem/1.2 var(--font-sans);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 3px;
+  }
+
+  .btn:active:not(:disabled, [aria-disabled='true']) {
+    transform: translateY(1px);
+  }
+
+  /* Primary — solid olive */
+  .btn--primary {
+    --btn-bg: var(--c-accent);
+    --btn-fg: var(--c-on-accent);
+    --btn-border: var(--c-accent);
+  }
+  .btn--primary:hover:not(:disabled, [aria-disabled='true']) {
+    --btn-bg: var(--c-accent-hover);
+    --btn-border: var(--c-accent-hover);
+  }
+  .btn--primary:active:not(:disabled, [aria-disabled='true']) {
+    --btn-bg: var(--c-accent-active);
+    --btn-border: var(--c-accent-active);
+  }
+
+  /* Secondary — outline, fills with text colour on hover */
+  .btn--secondary {
+    --btn-fg: var(--c-text);
+    --btn-border: var(--c-text);
+  }
+  .btn--secondary:hover:not(:disabled, [aria-disabled='true']) {
+    --btn-bg: var(--c-text);
+    --btn-fg: var(--c-bg);
+  }
+  :global(.on-dark) .btn--secondary:hover:not(:disabled, [aria-disabled='true']) {
+    --btn-fg: var(--c-dark);
+  }
+  .btn--secondary:active:not(:disabled, [aria-disabled='true']) {
+    opacity: 0.88;
+  }
+
+  /* Link — text with an arrow; keeps a 44 px hit area */
+  .btn--link {
+    --btn-fg: var(--c-link);
+    min-height: var(--hit);
+    padding: 0 0.125rem;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+  .btn--link .btn__label {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition: text-decoration-color var(--dur-fast) var(--ease-out);
+  }
+  .btn--link:hover .btn__label {
+    text-decoration-color: currentColor;
+  }
+  .btn--link :global(.btn__arrow) {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .btn--link:hover:not(:disabled, [aria-disabled='true']) :global(.btn__arrow) {
+    transform: translateX(4px);
+  }
+
+  /* Disabled */
+  .btn:disabled:not([aria-busy='true']),
+  .btn[aria-disabled='true'] {
+    --btn-bg: var(--c-disabled-bg);
+    --btn-fg: var(--c-disabled-fg);
+    --btn-border: var(--c-disabled-bg);
+    cursor: not-allowed;
+  }
+  .btn--link:disabled:not([aria-busy='true']),
+  .btn--link[aria-disabled='true'] {
+    --btn-bg: transparent;
+    --btn-border: transparent;
+  }
+
+  /* Loading — keeps its variant colours, shows a spinner */
+  .btn[aria-busy='true'] {
+    cursor: progress;
+  }
+  .btn__spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 1.5px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: btn-spin 800ms linear infinite;
+  }
+
+  @keyframes btn-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn__spinner {
+      animation-duration: 2.4s;
+    }
+  }
+</style>

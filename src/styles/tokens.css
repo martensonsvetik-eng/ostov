@@ -1,0 +1,78 @@
+/*
+ * ОСТОВ design tokens — brief.md §6 (palette, type scale, grid, motion).
+ * Contrast of every text pair is verified in tests/unit/contrast.test.ts.
+ */
+:root {
+  /* Palette */
+  --c-bg: #f4f1ea; /* тёплый белый — основные секции */
+  --c-bg-2: #fbfaf6; /* карточки, поля формы */
+  --c-dark: #24221f; /* графит — блок 4, подвал */
+  --c-text: #24221f; /* 14.07:1 на --c-bg */
+  --c-muted: #5e5a53; /* 6.08:1 на --c-bg */
+  --c-accent: #4f5b3a; /* глубокая олива: основная кнопка, ссылки, фокус */
+  --c-accent-hover: #434e31;
+  --c-accent-active: #384128;
+  --c-on-accent: #ffffff; /* 7.27:1 на --c-accent */
+  --c-error: #a23b2a; /* только вместе с иконкой и текстом; 6.29:1 на --c-bg-2 */
+  --c-line: #8a8479; /* граница полей: 3.55:1 на --c-bg-2 (WCAG 1.4.11) */
+  --c-hairline: #ddd8cd; /* декоративные разделители, не несут смысла */
+  --c-disabled-bg: #e4e0d7;
+  --c-disabled-fg: #5e5a53;
+  --c-link: var(--c-accent);
+  --c-focus: var(--c-accent); /* 6.44:1 на --c-bg, 6.96:1 на --c-bg-2 */
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --fs-h1: clamp(3.5rem, 2.6rem + 3.6vw, 5.5rem); /* 56–88 px */
+  --fs-h2: clamp(2.25rem, 1.7rem + 2.2vw, 3.5rem); /* 36–56 px */
+  --fs-h3: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem); /* 22–28 px */
+  --fs-body: clamp(1rem, 0.94rem + 0.25vw, 1.125rem); /* 16–18 px */
+  --fs-caption: 0.875rem; /* 14 px */
+  --lh-body: 1.55;
+  --lh-heading: 1.08;
+  --tracking-caps: 0.08em;
+
+  /* Grid & spacing */
+  --container: 1320px;
+  --gutter: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+  --grid-cols: 4;
+  --grid-gap: clamp(1rem, 0.7rem + 1.2vw, 1.5rem);
+  --space-section: clamp(4.5rem, 3rem + 8vw, 10rem); /* 72–96 телефон, 120–160 компьютер */
+  --radius: 2px;
+  --hit: 44px; /* минимальная область нажатия */
+
+  /* Motion */
+  --dur-fast: 180ms; /* наведение на кнопки и карточки */
+  --dur-expand: 280ms; /* аккордеон, раскрытие коллекций */
+  --dur-reveal: 500ms; /* появление блоков */
+  --reveal-shift: 20px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --grid-cols: 12;
+  }
+}
+
+/* Тёмные секции (блок 4, подвал): переопределяем роли, а не компоненты. */
+.on-dark {
+  --c-text: #f4f1ea; /* 14.07:1 на --c-dark */
+  --c-muted: #b8b1a5; /* 7.46:1 */
+  --c-link: #c9cfb4; /* 9.87:1 */
+  --c-focus: #f4f1ea;
+  --c-line: #8a8479;
+  --c-hairline: #3a3733;
+  background: var(--c-dark);
+  color: var(--c-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-expand: 0ms;
+    --dur-reveal: 0ms;
+    --reveal-shift: 0px;
+  }
+}

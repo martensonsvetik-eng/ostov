@@ -1,0 +1,501 @@
+---
+/**
+ * /ui/ — internal UI kit: tokens, type scale and every state of the base
+ * components. Not linked from the landing; noindex comes from Base.
+ */
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Field from '../components/ui/Field.astro';
+import Choice from '../components/ui/Choice.astro';
+import { getDict } from '../i18n';
+import { contrastRatio } from '../lib/contrast';
+
+const t = getDict('ru');
+const f = t.forms;
+const c = f.contact;
+
+const swatches = [
+  { token: '--c-bg', hex: '#F4F1EA', name: 'Фон', role: 'Основные секции', on: '#24221F' },
+  { token: '--c-bg-2', hex: '#FBFAF6', name: 'Фон 2', role: 'Карточки, поля формы', on: '#24221F' },
+  { token: '--c-dark', hex: '#24221F', name: 'Графит', role: 'Блок материалов, подвал', on: '#F4F1EA' },
+  { token: '--c-muted', hex: '#5E5A53', name: 'Второстепенный', role: 'Подписи на светлом фоне', on: '#F4F1EA' },
+  { token: '--c-accent', hex: '#4F5B3A', name: 'Глубокая олива', role: 'Основная кнопка, ссылки, фокус', on: '#FFFFFF' },
+  { token: '--c-error', hex: '#A23B2A', name: 'Ошибка', role: 'Только с иконкой и текстом', on: '#FBFAF6' },
+].map((s) => ({ ...s, ratio: contrastRatio(s.hex, s.on).toFixed(2) }));
+
+const scale = [
+  { tag: 'h1', spec: 'H1 · Cormorant Garamond 500 · 56–88 px', text: 'Кухня — это каркас дома' },
+  { tag: 'h2', spec: 'H2 · Cormorant Garamond 600 · 36–56 px', text: 'Дерево и камень из одной мастерской' },
+  { tag: 'h3', spec: 'H3 · Manrope 500 · 22–28 px', text: 'Один архитектор ведёт проект' },
+  { tag: 'p', spec: 'Текст · Manrope 400 · 16–18 px · интерлиньяж 1.55', text: t.materials.lead },
+  { tag: 'caption', spec: 'Подпись · Manrope 400 · 14 px', text: t.projects.main.meta },
+] as const;
+
+const sections = [
+  { id: 'colour', n: '01', title: 'Цвет' },
+  { id: 'type', n: '02', title: 'Типографика' },
+  { id: 'buttons', n: '03', title: 'Кнопки' },
+  { id: 'fields', n: '04', title: 'Поля' },
+  { id: 'choice', n: '05', title: 'Выбор' },
+];
+---
+<Base lang="ru" title="UI-кит — ОСТОВ" description="Внутренняя страница: дизайн-токены и базовые компоненты ОСТОВ.">
+  <header class="kit-head container">
+    <p class="eyebrow">ОСТОВ · UI-кит</p>
+    <h1>Каркас интерфейса</h1>
+    <p class="kit-lead">
+      Токены, шкала шрифтов и все состояния базовых компонентов. Служебная страница: закрыта от индексации и не связана с
+      лендингом.
+    </p>
+    <nav class="kit-toc" aria-label="Разделы UI-кита">
+      <ol>
+        {sections.map((s) => <li><a href={`#${s.id}`}><span>{s.n}</span>{s.title}</a></li>)}
+      </ol>
+    </nav>
+  </header>
+
+  <!-- 01 Colour -->
+  <section class="kit-section container" id="colour" aria-labelledby="colour-title">
+    <div class="kit-label"><span class="kit-n">01</span><h2 id="colour-title">Цвет</h2></div>
+    <div class="kit-body">
+      <ul class="swatches" role="list">
+        {
+          swatches.map((s) => (
+            <li class="swatch">
+              <div class="swatch__chip" style={`background:${s.hex};color:${s.on}`}>
+                <span>Аа</span>
+                <span class="swatch__ratio">{s.ratio}:1</span>
+              </div>
+              <div class="swatch__meta">
+                <p class="swatch__name">{s.name}</p>
+                <p class="caption"><code>{s.hex}</code> · <code>{s.token}</code></p>
+                <p class="caption">{s.role}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="caption kit-note">
+        Цифра на образце — контраст текста на этом фоне (WCAG). Рамка фокуса — олива на светлом фоне (6.44:1), тёплый белый
+        на графите.
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 Type -->
+  <section class="kit-section container" id="type" aria-labelledby="type-title">
+    <div class="kit-label"><span class="kit-n">02</span><h2 id="type-title">Типографика</h2></div>
+    <div class="kit-body type-scale">
+      {
+        scale.map((s) => (
+          <div class="type-row">
+            <p class="type-spec caption">{s.spec}</p>
+            {s.tag === 'h1' && <p class="type-sample type-sample--h1">{s.text}</p>}
+            {s.tag === 'h2' && <p class="type-sample type-sample--h2">{s.text}</p>}
+            {s.tag === 'h3' && <p class="type-sample type-sample--h3">{s.text}</p>}
+            {s.tag === 'p' && <p class="type-sample type-sample--body">{s.text}</p>}
+            {s.tag === 'caption' && <p class="type-sample caption">{s.text}</p>}
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 03 Buttons -->
+  <section class="kit-section container" id="buttons" aria-labelledby="buttons-title">
+    <div class="kit-label"><span class="kit-n">03</span><h2 id="buttons-title">Кнопки</h2></div>
+    <div class="kit-body">
+      <div class="states">
+        <div class="states__row">
+          <h3 class="states__name">Основная</h3>
+          <div class="states__cell"><Button variant="primary">{t.header.cta}</Button><span class="caption">обычная</span></div>
+          <div class="states__cell"><Button variant="primary" disabled>{t.header.cta}</Button><span class="caption">неактивная</span></div>
+          <div class="states__cell"><Button variant="primary" type="submit" loading>{f.loading}</Button><span class="caption">загрузка</span></div>
+        </div>
+        <div class="states__row">
+          <h3 class="states__name">Вторичная</h3>
+          <div class="states__cell"><Button variant="secondary">{c.prepare}</Button><span class="caption">обычная</span></div>
+          <div class="states__cell"><Button variant="secondary" disabled>{c.prepare}</Button><span class="caption">неактивная</span></div>
+          <div class="states__cell"><Button variant="secondary" href="#buttons">{t.pro.cta}</Button><span class="caption">ссылка-кнопка</span></div>
+        </div>
+        <div class="states__row">
+          <h3 class="states__name">Текстовая</h3>
+          <div class="states__cell"><Button variant="link" href="#buttons">{t.hero.secondary}</Button><span class="caption">ссылка</span></div>
+          <div class="states__cell"><Button variant="link">{t.collections.more}</Button><span class="caption">кнопка</span></div>
+          <div class="states__cell"><Button variant="link" disabled>{t.materials.samplesLink}</Button><span class="caption">неактивная</span></div>
+        </div>
+      </div>
+
+      <div class="on-dark dark-demo">
+        <p class="eyebrow">На тёмном фоне</p>
+        <div class="dark-demo__row">
+          <Button variant="primary">{t.header.cta}</Button>
+          <Button variant="secondary">{c.prepare}</Button>
+          <Button variant="link" href="#buttons">{t.materials.samplesLink}</Button>
+        </div>
+      </div>
+      <p class="caption kit-note">
+        Наведение — 180 мс, нажатие сдвигает кнопку на 1 px. Фокус с клавиатуры — рамка 2 px с отступом 3 px. Область
+        нажатия каждой кнопки не меньше 44×44 px.
+      </p>
+    </div>
+  </section>
+
+  <!-- 04 Fields -->
+  <section class="kit-section container" id="fields" aria-labelledby="fields-title">
+    <div class="kit-label"><span class="kit-n">04</span><h2 id="fields-title">Поля</h2></div>
+    <div class="kit-body">
+      <div class="field-grid">
+        <div>
+          <Field name="name" label={c.name} type="text" autocomplete="name" required />
+          <p class="caption kit-state">обычное</p>
+        </div>
+        <div class="demo-focus">
+          <Field id="f-email-focus" name="email" label={f.catalog.email} type="email" inputmode="email" autocomplete="email" value="vera@" />
+          <p class="caption kit-state">фокус (показан статично)</p>
+        </div>
+        <div>
+          <Field name="phone" label={c.phone} type="tel" inputmode="tel" autocomplete="tel" required value="+7 912 34" error={f.errors.phoneDigits} />
+          <p class="caption kit-state">ошибка</p>
+        </div>
+        <div>
+          <Field id="f-name-short" name="name-short" label={c.name} type="text" required value="В" error={f.errors.tooShort} />
+          <p class="caption kit-state">ошибка</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Choice -->
+  <section class="kit-section container" id="choice" aria-labelledby="choice-title">
+    <div class="kit-label"><span class="kit-n">05</span><h2 id="choice-title">Выбор</h2></div>
+    <div class="kit-body">
+      <form class="choice-grid" onsubmit="return false" novalidate aria-label="Пример формы">
+        <Choice
+          name="method"
+          legend={c.method.label}
+          type="radio"
+          inline
+          required
+          checked={['call']}
+          options={[
+            { value: 'call', label: c.method.options.call },
+            { value: 'message', label: c.method.options.message },
+          ]}
+        />
+        <Choice
+          name="meeting"
+          legend={c.meeting.label}
+          type="radio"
+          required
+          checked={['showroom']}
+          options={[
+            { value: 'showroom', label: c.meeting.options.showroom },
+            { value: 'onsite', label: c.meeting.options.onsite },
+            { value: 'video', label: c.meeting.options.video },
+          ]}
+        />
+        <Choice
+          name="materials"
+          legend={f.questionnaire.materials.label}
+          hint={f.questionnaire.materials.hint}
+          type="checkbox"
+          checked={['oak', 'travertine']}
+          options={Object.entries(f.materials).map(([value, label]) => ({ value, label }))}
+        />
+        <Choice
+          name="consent"
+          legend="Согласия"
+          type="checkbox"
+          error={f.errors.consent}
+          options={[
+            { value: 'consent', label: c.consent },
+            { value: 'newsletter', label: c.newsletter },
+          ]}
+        />
+        <div class="form-foot">
+          <p class="caption">{f.demoNote}</p>
+          <Button variant="primary" type="submit">{c.submit}</Button>
+        </div>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .kit-head {
+    padding-block: clamp(4rem, 2rem + 8vw, 9rem) clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .kit-lead {
+    max-width: 38rem;
+    color: var(--c-muted);
+  }
+
+  .kit-toc ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kit-toc a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--hit);
+    color: var(--c-text);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .kit-toc a:hover {
+    text-decoration: underline;
+  }
+
+  .kit-toc span,
+  .kit-n {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    color: var(--c-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kit-section {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    gap: 2rem var(--grid-gap);
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem);
+    border-top: 1px solid var(--c-hairline);
+  }
+
+  .kit-label {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+
+  /* Section labels: Cormorant stays ≥ 32 px, but smaller than H2 so it fits 3 columns. */
+  .kit-label h2 {
+    font-size: clamp(2.25rem, 2rem + 0.6vw, 2.5rem);
+  }
+
+  .kit-body {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .kit-label {
+      grid-column: 1 / span 3;
+      position: sticky;
+      top: 2rem;
+    }
+    .kit-body {
+      grid-column: 4 / -1;
+    }
+  }
+
+  .kit-note {
+    margin-top: 1.5rem;
+    max-width: 40rem;
+  }
+
+  /* Swatches */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+    gap: 1.5rem var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .swatch__chip {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    aspect-ratio: 4 / 3;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--c-hairline);
+    border-radius: var(--radius);
+    font-family: var(--font-serif);
+    font-size: 2.25rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .swatch__ratio {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .swatch__meta {
+    display: grid;
+    gap: 0.125rem;
+    margin-top: 0.75rem;
+  }
+
+  .swatch__name {
+    font-weight: 500;
+  }
+
+  code {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Type scale */
+  .type-scale {
+    display: grid;
+  }
+
+  .type-row {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--c-hairline);
+  }
+
+  .type-row:first-child {
+    padding-top: 0;
+  }
+
+  .type-sample--h1 {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h1);
+    font-weight: 500;
+    line-height: var(--lh-heading);
+    letter-spacing: -0.01em;
+  }
+
+  .type-sample--h2 {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    line-height: var(--lh-heading);
+    letter-spacing: -0.01em;
+  }
+
+  .type-sample--h3 {
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .type-sample--body {
+    max-width: 36rem;
+  }
+
+  /* Button states */
+  .states {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .states__row {
+    display: grid;
+    gap: 1rem 1.5rem;
+    align-items: start;
+  }
+
+  .states__name {
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--c-muted);
+  }
+
+  .states__cell {
+    display: grid;
+    justify-items: start;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .states__row {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 1.5rem;
+    }
+    .states__name {
+      flex: 0 0 8rem;
+    }
+    .states__name {
+      padding-top: 1rem;
+    }
+  }
+
+  .dark-demo {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--radius);
+  }
+
+  .dark-demo__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+
+  /* Fields */
+  .field-grid {
+    display: grid;
+    gap: 2rem var(--grid-gap);
+  }
+
+  @media (min-width: 768px) {
+    .field-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .kit-state {
+    margin-top: 0.5rem;
+  }
+
+  .demo-focus :global(.field__input) {
+    outline: 2px solid var(--c-focus);
+    outline-offset: 2px;
+    border-color: var(--c-accent);
+  }
+
+  /* Choice */
+  .choice-grid {
+    display: grid;
+    gap: 2.25rem var(--grid-gap);
+    max-width: 44rem;
+  }
+
+  @media (min-width: 768px) {
+    .choice-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .choice-grid > :global(:first-child),
+    .form-foot {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .form-foot {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+</style>
