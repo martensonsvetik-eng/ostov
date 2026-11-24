@@ -1,8 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import HeroPreload from '../components/sections/HeroPreload.astro';
+import Facts from '../components/sections/Facts.astro';
 import SectionStubs from '../components/sections/SectionStubs.astro';
 ---
 <Base lang="ru" title="ОСТОВ" description="ОСТОВ — кухни, собранные вокруг вас.">
-  <h1>ОСТОВ</h1>
+  <HeroPreload slot="head" />
+  <Hero lang="ru" />
+  <Facts lang="ru" />
   <SectionStubs lang="ru" />
 </Base>

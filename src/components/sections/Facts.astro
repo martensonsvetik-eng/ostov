@@ -1,0 +1,78 @@
+---
+/** Блок 2 — полоса фактов (brief.md §5): four short facts under the first screen. */
+import { getDict, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const t = getDict(Astro.props.lang).facts;
+const items = Object.values(t.items);
+---
+<section class="facts" aria-labelledby="facts-title" data-facts>
+  <div class="container">
+    <h2 id="facts-title" class="visually-hidden">{t.label}</h2>
+    <ul class="facts__list" role="list">
+      {items.map((item) => (
+        <li class="facts__item">
+          <p class="facts__title">{item.title}</p>
+          <p class="facts__text">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .facts {
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+    border-bottom: 1px solid var(--c-hairline);
+  }
+
+  .facts__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.25rem var(--grid-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .facts__item {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--c-hairline);
+  }
+
+  /* Cormorant only at ≥32 px (brief.md §6). */
+  .facts__title {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 1.75rem + 0.6vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--c-text);
+    text-wrap: balance;
+    /* Cormorant defaults to old-style figures: «10» would read as «IO». */
+    font-variant-numeric: lining-nums;
+  }
+
+  .facts__text {
+    max-width: 22rem;
+    margin-top: 0.75rem;
+    color: var(--c-muted);
+    font-size: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .facts__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3rem var(--grid-gap);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .facts__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 0.5rem + 2vw, 3rem);
+    }
+  }
+</style>

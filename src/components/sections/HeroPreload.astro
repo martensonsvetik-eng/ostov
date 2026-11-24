@@ -1,0 +1,14 @@
+---
+/** <head> preload of the phone variant of the first-screen photo (the LCP element on mobile). */
+import { getHeroImage } from '../../lib/hero-image';
+const { preload } = await getHeroImage();
+---
+<link
+  rel="preload"
+  as="image"
+  type={preload.type}
+  imagesrcset={preload.srcset}
+  imagesizes={preload.sizes}
+  media={preload.media}
+  fetchpriority="high"
+/>
