@@ -2,6 +2,7 @@
 import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/global.css';
+import Header from '../components/sections/Header.astro';
 
 interface Props {
   lang: 'ru' | 'en';
@@ -28,6 +29,7 @@ const skipLabel = lang === 'ru' ? 'Перейти к содержимому' : '
   </head>
   <body>
     <a class="skip-link" href="#main">{skipLabel}</a>
+    <Header lang={lang} />
     <main id="main">
       <slot />
     </main>
