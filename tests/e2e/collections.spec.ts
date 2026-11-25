@@ -255,6 +255,9 @@ test.describe('наведение на карточки', () => {
     await page.mouse.move(0, 0);
     await expect.poll(() => pic.evaluate(scaleOf)).toBe(1);
     await btn.click();
+    // Pointer off the cards: Shift+Tab lands on the hero link and smooth-scrolls the page up and
+    // back, which would sweep the photo under a resting pointer and show the badge by hover.
+    await page.mouse.move(0, 0);
     await page.keyboard.press('Shift+Tab');
     await page.keyboard.press('Tab');
     await expect(btn).toBeFocused();

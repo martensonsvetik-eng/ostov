@@ -5,22 +5,38 @@
  * stronger one under the subtitle and buttons. Both are grid items stretched over
  * the rows they protect, so they follow the text whatever its wrapping.
  * H1, subtitle and the primary CTA fit the first screen from 360×740 up (§10.2).
+ *
+ * Living layer (brief.md §6, «Анимация»), quiet and short:
+ * - entrance, CSS only, once per load: H1 words, subtitle and actions rise 14 px and fade in,
+ *   staggered. Needs JS (html.js) and allowed motion, so the text is never held back without
+ *   JS or with reduced motion. Keyframes have no `to` and use `backwards` fill: they end on
+ *   the element's own style and leave nothing behind;
+ * - desktop «morning light» (src/scripts/hero.ts): a warm glow overlay under the scrims
+ *   follows the pointer.
+ * The photo itself never moves on load or with the pointer; its only motion is the desktop
+ * GSAP scroll parallax on the <img> (motion.ts).
  */
 import Button from '../ui/Button.astro';
 import { getDict, type Lang } from '../../i18n';
 import { getHeroImage } from '../../lib/hero-image';
-import { SCRIM_BASE_ALPHA, SCRIM_LOWER_ALPHA } from '../../lib/hero-scrim';
+import { SCRIM_BASE_ALPHA, SCRIM_LOWER_ALPHA, LIGHT_RGB, LIGHT_ALPHA } from '../../lib/hero-scrim';
 
 interface Props {
   lang: Lang;
 }
 const t = getDict(Astro.props.lang).hero;
 const { sources, img } = await getHeroImage();
+// H1 words as inline-blocks, so each can rise on its own (transform needs a box); spaces stay text.
+const esc = (v: string) => v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const words = t.title.split(' ');
+const titleHtml = words.map((w, i) => `<span class="hero__w" style="--i: ${i}">${esc(w)}</span>`).join(' ');
+const light = `rgb(${[1, 3, 5].map((i) => parseInt(LIGHT_RGB.slice(i, i + 2), 16)).join(' ')}`;
 ---
 <section
   class="hero on-dark"
   aria-labelledby="hero-title"
-  style={`--scrim-base: ${SCRIM_BASE_ALPHA}; --scrim-lower: ${SCRIM_LOWER_ALPHA}`}
+  data-hero
+  style={`--scrim-base: ${SCRIM_BASE_ALPHA}; --scrim-lower: ${SCRIM_LOWER_ALPHA}; --light-in: ${light} / ${LIGHT_ALPHA}); --light-mid: ${light} / ${(LIGHT_ALPHA * 0.45).toFixed(3)}); --light-out: ${light} / 0); --words: ${words.length}`}
 >
   <picture class="hero__media" data-hero-media>
     {sources.map((s) => (
@@ -38,22 +54,28 @@ const { sources, img } = await getHeroImage();
       data-parallax
     />
   </picture>
+  <div class="hero__light" data-hero-light aria-hidden="true"></div>
 
   <div class="hero__body">
     <div class="hero__scrim hero__scrim--base" data-hero-scrim aria-hidden="true"></div>
     <div class="hero__scrim hero__scrim--lower" aria-hidden="true"></div>
     <div class="container hero__head">
-      <h1 id="hero-title" class="hero__title">{t.title}</h1>
+      <h1 id="hero-title" class="hero__title" set:html={titleHtml} />
     </div>
     <div class="container hero__lower">
-      <p class="hero__sub" data-hero-sub>{t.subtitle}</p>
+      <p class="hero__sub hero__enter" style="--step: 0" data-hero-sub>{t.subtitle}</p>
       <div class="hero__actions">
-        <Button variant="primary" href="#contact" data-hero-cta>{t.cta}</Button>
-        <Button variant="link" href="#projects" data-hero-more>{t.secondary}</Button>
+        <Button variant="primary" href="#contact" class="hero__enter" style="--step: 1" data-hero-cta>{t.cta}</Button>
+        <Button variant="link" href="#projects" class="hero__enter" style="--step: 2" data-hero-more>{t.secondary}</Button>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  import { initHeroLight } from '../../scripts/hero';
+  initHeroLight();
+</script>
 
 <style>
   .hero {
@@ -66,6 +88,8 @@ const { sources, img } = await getHeroImage();
     justify-content: flex-end;
     height: clamp(34rem, calc(100svh - var(--header-h)), 68rem);
     overflow: clip;
+    /* The glow blends with the photo only, never with what is behind the section. */
+    isolation: isolate;
   }
 
   .hero__media,
@@ -175,6 +199,53 @@ const { sources, img } = await getHeroImage();
     }
     .hero__actions {
       max-width: var(--text-max);
+    }
+  }
+
+  /* ---- Living layer (brief.md §6, «Анимация»; header comment) ---- */
+
+  .hero__title :global(.hero__w) {
+    display: inline-block;
+  }
+
+  .hero__light {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Entrance: starts with the first paint, no JS wait. Delay per step ≈ 90 ms. */
+    :global(html.js) .hero__title :global(.hero__w),
+    :global(html.js) .hero :global(.hero__enter) {
+      animation: hero-rise 700ms var(--ease-out) backwards;
+      animation-delay: calc(var(--i, 0) * 90ms + 60ms);
+    }
+    :global(html.js) .hero :global(.hero__enter) {
+      animation-delay: calc((var(--words) + var(--step)) * 90ms + 60ms);
+    }
+
+    /* Pointer light: mouse-like pointers only (src/scripts/hero.ts). Under the scrims. */
+    @media (hover: hover) and (pointer: fine) {
+      .hero__light {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 64rem;
+        height: 64rem;
+        margin: -32rem 0 0 -32rem;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, var(--light-in), var(--light-mid) 45%, var(--light-out));
+        mix-blend-mode: screen;
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
     }
   }
 </style>

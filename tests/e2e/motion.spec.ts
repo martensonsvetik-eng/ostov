@@ -54,6 +54,17 @@ test('на телефоне GSAP не грузится', async ({ page }, info) 
 
 test('первый экран не прячется: H1, подзаголовок и CTA видны сразу', async ({ page }) => {
   await page.goto('/ostov/');
+  // The H1 block itself is never animated; only its words, the subtitle and the actions get a
+  // short one-off entrance (Hero.astro), which starts at once and is over within 1.5 s.
+  expect(await style(page, 'h1')).toEqual(['1', 'none']);
+  const ends = await page.evaluate(() =>
+    document.getAnimations().filter((a) => (a as CSSAnimation).animationName === 'hero-rise').map((a) => Number(a.effect!.getComputedTiming().endTime)),
+  );
+  expect(ends.length).toBeGreaterThan(0);
+  expect(Math.max(...ends)).toBeLessThanOrEqual(1500);
+  await page.evaluate(() =>
+    Promise.all(document.getAnimations().filter((a) => (a as CSSAnimation).animationName === 'hero-rise').map((a) => a.finished)),
+  );
   for (const sel of ['h1', '[data-hero-sub]', '[data-hero-cta]']) {
     expect(await style(page, sel)).toEqual(['1', 'none']);
   }
