@@ -24,7 +24,7 @@
   /* Typography */
   --font-serif: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
   --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-  --fs-h1: clamp(2.5rem, min(2.99rem + 4.14vw, 12.8vw - 0.2rem), 6.325rem); /* +15% от прежних 56–88 px; на телефоне ограничен шириной слова «индивидуальным»: 43 px (360), 47 px (390), 80 px (768), 101 px (от ~1390) */
+  --fs-h1: clamp(2.5rem, min(2.99rem + 4.14vw, 16vw - 0.27rem), 6.325rem); /* +15% от прежних 56–88 px; на телефоне ограничен шириной слова «Дизайнерские»: 53 px (360), 58 px (390), 80 px (768), 101 px (от ~1390) */
   --fs-h2: clamp(2.25rem, 1.4rem + 3.45vw, 4.5rem); /* 36 px до 390, 49 на 768, 66 на 1280, 72 от 1440 */
   --fs-h3: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem); /* 22–28 px */
   --fs-body: clamp(1rem, 0.94rem + 0.25vw, 1.125rem); /* 16–18 px */

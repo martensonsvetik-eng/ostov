@@ -26,7 +26,7 @@ export const en: Dict = {
     langEn: 'EN',
   },
   hero: {
-    title: 'Kitchens made to individual designs',
+    title: 'Designer kitchens from our own workshop',
     subtitle: 'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
     cta: 'Discuss your project',
     secondary: 'See projects',

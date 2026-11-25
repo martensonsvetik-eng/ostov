@@ -34,19 +34,20 @@ function textPath(text, size) {
 
 const src = fs.readFileSync('src/components/sections/logo-paths.ts', 'utf8');
 const logos = JSON.parse(src.slice(src.indexOf('{"ru"'), src.lastIndexOf('}') + 1));
-const taglines = { ru: 'Кухни по индивидуальным проектам', en: 'Kitchens made to individual designs' };
+const taglines = { ru: ['Дизайнерские кухни', 'собственного производства'], en: ['Designer kitchens', 'from our own workshop'] };
 
 for (const lang of ['ru', 'en']) {
   const logo = logos[lang];
   const k = 5; // wordmark 28 px → 140 px
-  const tag = textPath(taglines[lang], 64);
+  const tags = taglines[lang].map((t) => textPath(t, 56));
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#24221f"/>
   <rect x="80" y="80" width="1040" height="470" fill="none" stroke="#3a3733" stroke-width="1"/>
   <g transform="translate(120 150) scale(${k})" fill="#f4f1ea"><path d="${logo.d}"/></g>
   <rect x="120" y="330" width="64" height="2" fill="#c9cfb4"/>
-  <g transform="translate(120 440)" fill="#f4f1ea"><path d="${tag.d}"/></g>
+  <g transform="translate(120 420)" fill="#f4f1ea"><path d="${tags[0].d}"/></g>
+  <g transform="translate(120 490)" fill="#f4f1ea"><path d="${tags[1].d}"/></g>
 </svg>`;
   await sharp(Buffer.from(svg)).jpeg({ quality: 88, mozjpeg: true }).toFile(`public/og-${lang}.jpg`);
-  console.log(`og-${lang}.jpg`, 'tagline width', Math.round(tag.w));
+  console.log(`og-${lang}.jpg`, 'tagline width', tags.map((t) => Math.round(t.w)));
 }

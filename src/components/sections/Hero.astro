@@ -125,7 +125,7 @@ const { sources, img } = await getHeroImage();
     --a: var(--scrim-lower);
     /* Solid from the subtitle down; fades up across the whole H1 (≈ two lines) so the
        step between the two layers reads as a gradient, not a band. Over the H1 it only adds. */
-    --f: clamp(6rem, 4.5rem + 4vw, 10rem);
+    --f: max(clamp(6rem, 4.5rem + 4vw, 10rem), calc(var(--fs-h1) * 3.2));
     grid-area: 2 / 1;
   }
 
@@ -160,8 +160,8 @@ const { sources, img } = await getHeroImage();
      breathe. Fully opaque up to 3rem past the widest text line (--text-end). */
   @media (min-width: 1024px) {
     .hero__scrim {
-      /* The H1 is the widest line: two lines ≈ 10.5em; the column is capped by the container. */
-      --title-w: min(calc(var(--fs-h1) * 10.8), 100% - 2 * var(--gutter), var(--container));
+      /* The H1 is the widest line: two lines ≈ 10.8em; the column is capped by the container. */
+      --title-w: min(calc(var(--fs-h1) * 11), 100% - 2 * var(--gutter), var(--container));
       --text-end: calc(max(var(--gutter), (100% - var(--container)) / 2) + max(var(--text-max), var(--title-w)));
       mask-image: linear-gradient(
         to right,
