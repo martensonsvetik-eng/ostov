@@ -220,10 +220,10 @@ test.describe('наведение на карточки', () => {
     expect(b.x).toBeGreaterThanOrEqual(box.x);
     expect(b.y).toBeGreaterThanOrEqual(box.y);
     expect(b.x).toBeCloseTo(box.x + 8, 0);
-    // Текст метки: графит на тёплом белом.
+    // Текст метки: белый на чёрном с непрозрачностью 95%.
     expect(await badge.evaluate((e) => [getComputedStyle(e).color, getComputedStyle(e).backgroundColor])).toEqual([
-      'rgb(36, 34, 31)',
-      'rgb(244, 241, 234)',
+      'rgb(255, 255, 255)',
+      'rgba(0, 0, 0, 0.95)',
     ]);
     await page.mouse.move(0, 0);
     await expect.poll(() => badge.evaluate((e) => getComputedStyle(e).opacity)).toBe('0');
