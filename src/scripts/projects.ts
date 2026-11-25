@@ -7,7 +7,8 @@
  * placed inside the photo frame: above the dot, or below when there is no room, and
  * shifted sideways near the edges.
  *
- * Tilt — the three cards below lean towards the pointer (±3.5°), the photo inside drifts
+ * Tilt — the photo frame of each card below leans with the pointer (±3.5°; the name and
+ * meta stay flat, so their text is never re-rasterised), the photo inside drifts
  * the other way and a soft glare follows. Fine pointer and allowed motion only; touch and
  * reduced motion keep the cards still. Only transform (and the glare's opacity) change.
  */
@@ -43,13 +44,53 @@ export function initHotspots(root: HTMLElement): void {
     const below = f.bottom - s.top;
     const need = h + GAP + EDGE;
     const side = above >= need ? 'top' : below >= need ? 'bottom' : above >= below ? 'top' : 'bottom';
-    let top = side === 'top' ? -GAP - h : GAP;
-    // Clamp into the frame (coordinates are relative to the dot).
-    top = Math.min(f.bottom - EDGE - h - s.top, Math.max(f.top + EDGE - s.top, top));
-    const left = Math.min(f.right - EDGE - w - s.left, Math.max(f.left + EDGE - s.left, -w / 2));
-    tip.style.left = `${Math.round(left)}px`;
-    tip.style.top = `${Math.round(top)}px`;
-    tip.dataset.side = side;
+    // Coordinates are relative to the dot. Clamp into the frame.
+    const minT = f.top + EDGE - s.top;
+    const maxT = f.bottom - EDGE - h - s.top;
+    const minL = f.left + EDGE - s.left;
+    const maxL = f.right - EDGE - w - s.left;
+    const clampT = (v: number) => Math.min(maxT, Math.max(minT, v));
+    const clampL = (v: number) => Math.min(maxL, Math.max(minL, v));
+    // First choice: above (or below) the dot; on a small photo that card may cover a dot,
+    // so the frame corners are tried too and the one covering the fewest dots wins.
+    const candidates = [
+      { left: clampL(-w / 2), top: clampT(side === 'top' ? -GAP - h : GAP) },
+      { left: minL, top: minT },
+      { left: maxL, top: minT },
+      { left: minL, top: maxT },
+      { left: maxL, top: maxT },
+    ];
+    const dots = parts.map(({ spot: d }) => {
+      const r = d.getBoundingClientRect();
+      return { x: r.left - s.left, y: r.top - s.top };
+    });
+    const R = GAP + 2;
+    // Covering its own dot is worst (the card would lose its anchor); other dots stay
+    // visible and tappable above the card (z-index), so they only cost a little.
+    const covered = (c: { left: number; top: number }) =>
+      dots
+        .filter((d) => d.x + R > c.left && d.x - R < c.left + w && d.y + R > c.top && d.y - R < c.top + h)
+        .reduce((sum, d) => sum + (d.x === 0 && d.y === 0 ? 100 : 1), 0);
+    let best = candidates[0]!;
+    let bestScore = covered(best);
+    for (const c of candidates.slice(1)) {
+      const score = covered(c);
+      if (score < bestScore) {
+        best = c;
+        bestScore = score;
+      }
+    }
+    tip.style.left = `${Math.round(best.left)}px`;
+    tip.style.top = `${Math.round(best.top)}px`;
+    tip.dataset.side = best.top + h / 2 < 0 ? 'top' : 'bottom';
+    // On a small photo some overlap is unavoidable. A dot whose centre lands on the card
+    // would sit on its text, so it steps back (fades, not tappable) until the card closes;
+    // a tap on the card closes it. Dots only grazing the edge stay above it (z-index).
+    parts.forEach(({ spot: other }, k) => {
+      const d = dots[k]!;
+      const under = other !== spot && d.x > best.left && d.x < best.left + w && d.y > best.top && d.y < best.top + h;
+      other.toggleAttribute('data-covered', under);
+    });
   }
 
   function open(i: number, pin: boolean): void {
@@ -69,6 +110,7 @@ export function initHotspots(root: HTMLElement): void {
     const { btn, tip } = parts[current]!;
     btn.setAttribute('aria-expanded', 'false');
     tip.hidden = true;
+    parts.forEach(({ spot }) => spot.removeAttribute('data-covered'));
     current = -1;
     pinned = false;
   }
@@ -96,7 +138,8 @@ export function initHotspots(root: HTMLElement): void {
       else open(i, false);
     });
     spot.addEventListener('pointerleave', (e) => {
-      if (e.pointerType !== 'mouse' || current !== i || pinned) return;
+      // A card opened from the keyboard stays while focus is in it, whatever the mouse does.
+      if (e.pointerType !== 'mouse' || current !== i || pinned || spot.querySelector(':focus-visible')) return;
       timer = window.setTimeout(close, CLOSE_DELAY);
     });
   });
@@ -151,7 +194,7 @@ export function initTilt(root: HTMLElement): void {
     let raf = 0;
 
     const write = () => {
-      card.style.transform = `rotateX(${cur.rx.toFixed(2)}deg) rotateY(${cur.ry.toFixed(2)}deg)`;
+      media.style.transform = `rotateX(${cur.rx.toFixed(2)}deg) rotateY(${cur.ry.toFixed(2)}deg)`;
       pic.style.transform = `translate3d(${cur.px.toFixed(1)}px, ${cur.py.toFixed(1)}px, 0) scale(${cur.z.toFixed(3)})`;
       card.style.setProperty('--gx', `${cur.gx.toFixed(0)}px`);
       card.style.setProperty('--gy', `${cur.gy.toFixed(0)}px`);
@@ -162,7 +205,7 @@ export function initTilt(root: HTMLElement): void {
       Object.assign(cur, { rx: 0, ry: 0, px: 0, py: 0, z: 1, gx: 0, gy: 0 });
       Object.assign(tgt, cur);
       card.classList.remove('is-tilting');
-      card.style.removeProperty('transform');
+      media.style.removeProperty('transform');
       pic.style.removeProperty('transform');
     };
     const step = () => {

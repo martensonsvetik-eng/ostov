@@ -421,8 +421,10 @@ const hotspots = [
     width: 0;
     height: 0;
   }
+  /* Dots stay above an open card, so a card never hides another dot. */
   .hotspot__btn {
     position: absolute;
+    z-index: 3;
     left: calc(var(--hit) / -2);
     top: calc(var(--hit) / -2);
     display: grid;
@@ -455,6 +457,14 @@ const hotspots = [
     border-radius: 50%;
     border: 1.5px solid var(--c-bg);
     opacity: 0;
+  }
+  /* A dot under the centre of an open card steps back (projects.ts sets data-covered). */
+  .hotspot__btn {
+    transition: opacity 200ms var(--ease-out);
+  }
+  .hotspot[data-covered] .hotspot__btn {
+    opacity: 0;
+    pointer-events: none;
   }
   .hotspot__btn:hover .hotspot__dot,
   .hotspot__btn[aria-expanded='true'] .hotspot__dot {
@@ -541,16 +551,15 @@ const hotspots = [
   }
 
   /* ---------- Round 3: card tilt ---------- */
-  /* projects.ts writes rotateX/rotateY on the card, an opposite translate3d on the photo
+  /* projects.ts writes rotateX/rotateY on the photo frame, an opposite translate3d on the photo
      and the glare position (--gx/--gy); it only runs for a fine pointer with motion allowed. */
-  .cards > li {
-    perspective: 1200px;
-  }
+  /* Only the photo frame tilts; the name and meta line stay flat and crisp. */
   .card {
-    transform-origin: 50% 50%;
+    perspective: 1200px;
   }
   .card__media {
     position: relative;
+    transform-origin: 50% 50%;
   }
   .card__media::after {
     content: '';
@@ -605,6 +614,7 @@ const hotspots = [
 
   @media (prefers-reduced-motion: reduce) {
     .lead__media :global(picture),
+    .hotspot__btn,
     .hotspot__dot,
     .card__media::after,
     .card .meta::after,

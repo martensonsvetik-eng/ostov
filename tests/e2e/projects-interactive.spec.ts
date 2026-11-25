@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 // Раунд 3 (заказчик, 2026-11-24): точки-материалы на фото «Дом у сосен» и наклон карточек проектов.
 const lead = '#projects [data-project="main"]';
 const tf = (el: Element) => getComputedStyle(el).transform;
-const REST = /^(none|matrix(1, 0, 0, 1, 0, 0))$/;
+const REST = /^(none|matrix\(1, 0, 0, 1, 0, 0\))$/;
 
 test.describe('«Дом у сосен»: точки с материалами', () => {
   test('три точки-кнопки ≥ 44×44 с aria-expanded и подсказкой', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('«Дом у сосен»: точки с материалами', 
     const btns = page.locator(`${lead} [data-hotspot-toggle]`);
     await btns.nth(0).click();
     await expect(btns.nth(0)).toHaveAttribute('aria-expanded', 'true');
-    // На узком экране открытая карточка может закрывать соседнюю точку, поэтому клик — событием.
+    // На телефоне соседняя точка может уйти под карточку (см. тест ниже), поэтому здесь — событием.
     await btns.nth(2).dispatchEvent('click');
     await expect(btns.nth(2)).toHaveAttribute('aria-expanded', 'true');
     await expect(btns.nth(0)).toHaveAttribute('aria-expanded', 'false');
@@ -76,6 +76,75 @@ test.describe('«Дом у сосен»: точки с материалами', 
     await expect(btns.nth(1)).toHaveAttribute('aria-expanded', 'false');
   });
 
+  test('открытая карточка: ни одна видимая точка не лежит на её тексте, остальные нажимаются', async ({ page }) => {
+    await page.goto('/ostov/');
+    const media = page.locator(`${lead} .lead__media`);
+    await media.scrollIntoViewIfNeeded();
+    await expect.poll(() => media.evaluate(tf)).toMatch(REST);
+    const btns = page.locator(`${lead} [data-hotspot-toggle]`);
+    for (let i = 0; i < 3; i++) {
+      await btns.nth(i).click();
+      await expect(btns.nth(i)).toHaveAttribute('aria-expanded', 'true');
+      const tip = page.locator(`#${await btns.nth(i).getAttribute('aria-controls')}`);
+      await expect.poll(() => tip.evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
+      const state = await page.locator(`${lead} [data-hotspot]`).evaluateAll(
+        (spots, idx) => {
+          const t = document.querySelectorAll<HTMLElement>('[data-project="main"] [data-hotspot-tip]')[idx]!.getBoundingClientRect();
+          return spots.map((spot, k) => {
+            const btn = spot.querySelector('button')!;
+            const r = btn.getBoundingClientRect();
+            const cx = r.left + r.width / 2;
+            const cy = r.top + r.height / 2;
+            return {
+              own: k === idx,
+              covered: spot.hasAttribute('data-covered'),
+              onCard: cx > t.left && cx < t.right && cy > t.top && cy < t.bottom,
+              hit: btn.contains(document.elementFromPoint(cx, cy)),
+            };
+          });
+        },
+        i,
+      );
+      for (const d of state) {
+        if (d.own) {
+          // Своя точка не уходит под свою карточку.
+          expect(d.covered).toBe(false);
+          expect(d.onCard).toBe(false);
+        } else if (d.onCard) {
+          expect(d.covered).toBe(true);
+        } else {
+          expect(d.covered).toBe(false);
+          expect(d.hit).toBe(true);
+        }
+      }
+      // Ушедшие под карточку точки прозрачны; касание карточки закрывает её и возвращает их.
+      await expect
+        .poll(() =>
+          page.locator(`${lead} [data-hotspot][data-covered] button`).evaluateAll((els) => els.map((e) => getComputedStyle(e).opacity)),
+        )
+        .toEqual(state.filter((d) => d.covered).map(() => '0'));
+      await tip.click();
+      await expect(btns.nth(i)).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.locator(`${lead} [data-hotspot][data-covered]`)).toHaveCount(0);
+    }
+  });
+
+  test('компьютер: открытая с клавиатуры карточка не закрывается от ухода мыши', async ({ page }) => {
+    test.skip((page.viewportSize()?.width ?? 0) < 1024, 'наведение проверяем на компьютере');
+    await page.goto('/ostov/');
+    const btns = page.locator(`${lead} [data-hotspot-toggle]`);
+    const btn = btns.nth(1);
+    await btn.scrollIntoViewIfNeeded();
+    await btns.nth(0).focus();
+    await page.keyboard.press('Tab');
+    await expect(btn).toBeFocused();
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    await btn.hover();
+    await page.mouse.move(5, 5);
+    await page.waitForTimeout(400);
+    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+  });
+
   for (const width of [360, 390, 1440, 1920]) {
     test(`${width}px: подсказки не выходят за край фото, без горизонтальной прокрутки`, async ({ page }) => {
       await page.setViewportSize({ width, height: width < 768 ? 844 : 900 });
@@ -90,7 +159,7 @@ test.describe('«Дом у сосен»: точки с материалами', 
         await expect(tip).toBeVisible();
         // Ждём конца появления (opacity → 1, translateY → 0), чтобы мерить итоговое положение.
         await expect.poll(() => tip.evaluate((e) => getComputedStyle(e).opacity)).toBe('1');
-        await expect.poll(() => tip.evaluate(tf)).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
+        await expect.poll(() => tip.evaluate(tf)).toMatch(REST);
         const [m, t] = await Promise.all([media.boundingBox(), tip.boundingBox()]);
         expect(t!.x).toBeGreaterThanOrEqual(m!.x - 0.5);
         expect(t!.y).toBeGreaterThanOrEqual(m!.y - 0.5);
@@ -163,24 +232,28 @@ test.describe('«Дом у сосен»: точки с материалами', 
 });
 
 test.describe('карточки проектов: наклон', () => {
-  test('компьютер: карточка наклоняется к курсору, фото смещается, блик и линия; уход — возврат', async ({ page }) => {
+  test('компьютер: фото карточки наклоняется к курсору (текст плоский), фото смещается, блик и линия; уход — возврат', async ({ page }) => {
     test.skip((page.viewportSize()?.width ?? 0) < 1024, 'наклон только для мыши, проверяем на компьютере');
     await page.goto('/ostov/');
     const item = page.locator('#projects [data-tilt]').first();
     const card = item.locator('.card');
-    const pic = card.locator('.card__media picture');
+    const frame = card.locator('.card__media');
+    const pic = frame.locator('picture');
     await item.scrollIntoViewIfNeeded();
     await expect.poll(() => item.evaluate(tf)).toMatch(REST);
-    expect(await card.evaluate(tf)).toBe('none');
+    expect(await frame.evaluate(tf)).toBe('none');
     const layout = () => item.evaluate((e: HTMLElement) => [e.offsetLeft, e.offsetTop, e.offsetWidth, e.offsetHeight]);
     const before = await layout();
     const box = (await item.boundingBox())!;
     // Правый верхний угол: 0.4 и −0.35 от центра → rotateY 2.8°, rotateX 2.45°.
     await page.mouse.move(box.x + box.width * 0.9, box.y + box.height * 0.15, { steps: 5 });
-    await expect.poll(() => card.evaluate(tf)).not.toBe('none');
+    await expect.poll(() => frame.evaluate(tf)).not.toBe('none');
+    // Наклоняется только рамка с фото: карточка с названием и строкой «город · бюджет · срок» плоская.
+    expect(await card.evaluate(tf)).toBe('none');
+    expect(await card.evaluate((e) => getComputedStyle(e).perspective)).toBe('1200px');
     // Approximate angles from the matrix (small angles): |rotateY| ≈ asin(m13), |rotateX| ≈ asin(m23).
     const angles = () =>
-      card.evaluate((e) => {
+      frame.evaluate((e) => {
         const m = new DOMMatrix(getComputedStyle(e).transform);
         return [m.m13, m.m23].map((v) => Math.round(Math.abs((Math.asin(v) * 180) / Math.PI) * 10) / 10);
       });
@@ -209,7 +282,7 @@ test.describe('карточки проектов: наклон', () => {
       .toBeCloseTo(2.4, 2);
     expect(await layout()).toEqual(before);
     await page.mouse.move(5, 5, { steps: 3 });
-    await expect.poll(() => card.evaluate(tf)).toBe('none');
+    await expect.poll(() => frame.evaluate(tf)).toBe('none');
     await expect.poll(() => pic.evaluate(tf)).toBe('none');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
@@ -223,7 +296,7 @@ test.describe('карточки проектов: наклон', () => {
       const box = (await item.boundingBox())!;
       await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.2, { steps: 5 });
       await page.waitForTimeout(300);
-      expect(await item.locator('.card').evaluate(tf)).toBe('none');
+      expect(await item.locator('.card__media').evaluate(tf)).toBe('none');
       expect(await item.locator('.card__media picture').evaluate(tf)).toBe('none');
     });
   });
@@ -238,7 +311,7 @@ test.describe('карточки проектов: наклон', () => {
       await page.touchscreen.tap(box.x + box.width * 0.8, box.y + 40);
       await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.2, { steps: 5 });
       await page.waitForTimeout(300);
-      expect(await item.locator('.card').evaluate(tf)).toBe('none');
+      expect(await item.locator('.card__media').evaluate(tf)).toBe('none');
       expect(await item.locator('.card__media').evaluate((e) => getComputedStyle(e, '::after').opacity)).toBe('0');
     });
   });

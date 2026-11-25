@@ -190,7 +190,7 @@ test.describe('наведение на карточки', () => {
     const badge = media.locator('[data-collection-badge]');
     await card.scrollIntoViewIfNeeded();
     // Ждём конца появления при прокрутке (карточка поднимается на 20 px), чтобы мерить итоговое место.
-    await expect.poll(() => card.evaluate((e) => getComputedStyle(e).transform)).toMatch(/^(none|matrix(1, 0, 0, 1, 0, 0))$/);
+    await expect.poll(() => card.evaluate((e) => getComputedStyle(e).transform)).toMatch(/^(none|matrix\(1, 0, 0, 1, 0, 0\))$/);
     // Старой вуали больше нет.
     expect(await media.evaluate((e) => getComputedStyle(e, '::after').content)).toBe('none');
     await expect(cursor).toHaveAttribute('aria-hidden', 'true');
