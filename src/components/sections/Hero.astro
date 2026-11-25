@@ -130,7 +130,7 @@ const { sources, img } = await getHeroImage();
   }
 
   .hero__title {
-    max-width: min(11em, var(--text-max));
+    max-width: min(16em, 100%);
     color: var(--c-text);
     letter-spacing: -0.015em;
     line-height: 1.02;
@@ -160,7 +160,9 @@ const { sources, img } = await getHeroImage();
      breathe. Fully opaque up to 3rem past the widest text line (--text-end). */
   @media (min-width: 1024px) {
     .hero__scrim {
-      --text-end: calc(max(var(--gutter), (100% - var(--container)) / 2) + var(--text-max));
+      /* The H1 is the widest line: two lines ≈ 10.5em; the column is capped by the container. */
+      --title-w: min(calc(var(--fs-h1) * 10.8), 100% - 2 * var(--gutter), var(--container));
+      --text-end: calc(max(var(--gutter), (100% - var(--container)) / 2) + max(var(--text-max), var(--title-w)));
       mask-image: linear-gradient(
         to right,
         #000 0,

@@ -34,7 +34,7 @@ function textPath(text, size) {
 
 const src = fs.readFileSync('src/components/sections/logo-paths.ts', 'utf8');
 const logos = JSON.parse(src.slice(src.indexOf('{"ru"'), src.lastIndexOf('}') + 1));
-const taglines = { ru: 'Кухня — это каркас дома', en: 'The kitchen is the frame of the home' };
+const taglines = { ru: 'Кухни по индивидуальным проектам', en: 'Kitchens made to individual designs' };
 
 for (const lang of ['ru', 'en']) {
   const logo = logos[lang];

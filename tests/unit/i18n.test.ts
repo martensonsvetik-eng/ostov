@@ -5,8 +5,8 @@ const flat = (o: object, p = ''): Record<string,string> => Object.entries(o).red
 test('одинаковые ключи', () => expect(Object.keys(flat(en)).sort()).toEqual(Object.keys(flat(ru)).sort()));
 test('нет пустых строк', () => { for (const d of [ru, en]) for (const v of Object.values(flat(d))) expect(v.trim()).not.toBe(''); });
 test('ключевые строки', () => {
-  expect(ru.hero.title).toBe('Кухня — это каркас дома');
-  expect(en.hero.title).toBe('The kitchen is the frame of the home');
+  expect(ru.hero.title).toBe('Кухни по индивидуальным проектам');
+  expect(en.hero.title).toBe('Kitchens made to individual designs');
   expect(ru.footer.rights).toBe('© 2026 ООО «Остов». Все права защищены.');
   expect(en.footer.rights).toBe('© 2026 Ostov LLC. All rights reserved.');
 });

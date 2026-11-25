@@ -26,7 +26,7 @@ export const en: Dict = {
     langEn: 'EN',
   },
   hero: {
-    title: 'The kitchen is the frame of the home',
+    title: 'Kitchens made to individual designs',
     subtitle: 'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
     cta: 'Discuss your project',
     secondary: 'See projects',

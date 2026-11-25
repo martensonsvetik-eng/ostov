@@ -23,8 +23,8 @@ test('360×740: H1, подзаголовок и «Обсудить проект�
 });
 
 for (const [path, title, cta] of [
-  ['/ostov/', 'Кухня — это каркас дома', 'Обсудить проект'],
-  ['/ostov/en/', 'The kitchen is the frame of the home', 'Discuss your project'],
+  ['/ostov/', 'Кухни по индивидуальным проектам', 'Обсудить проект'],
+  ['/ostov/en/', 'Kitchens made to individual designs', 'Discuss your project'],
 ] as const) {
   test(`копия первого экрана ${path}`, async ({ page }) => {
     await page.goto(path);
