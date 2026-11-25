@@ -277,7 +277,7 @@ test.describe('карточки проектов: наклон', () => {
       .toBe(1);
     await expect
       .poll(() =>
-        card.locator('.meta > div + div').first().evaluate((e) => new DOMMatrix(getComputedStyle(e, '::before').transform).a),
+        card.locator('.meta > div:not(:last-child)').first().evaluate((e) => new DOMMatrix(getComputedStyle(e, '::after').transform).a),
       )
       .toBeCloseTo(2.4, 2);
     expect(await layout()).toEqual(before);

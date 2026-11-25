@@ -24,3 +24,9 @@ test('нет видимых пометок о демо, концепте и вы
   const bad = /демо|концепт|вымышл|демонстрац|не отправл|заглушк|реальном проекте|demo|concept|fictional|demonstration|not sent|placeholder|real project/i;
   for (const d of [ru, en]) for (const [k, v] of Object.entries(flat(d))) expect(`${k}: ${v}`).not.toMatch(bad);
 });
+
+// Numbers never part from their word on a narrow phone (non-breaking spaces, U+00A0).
+test('hero subtitle keeps numbers with their words', () => {
+  expect(ru.hero.subtitle).toContain('12 лет, 240 проектов.');
+  expect(en.hero.subtitle).toContain('12 years, 240 projects.');
+});

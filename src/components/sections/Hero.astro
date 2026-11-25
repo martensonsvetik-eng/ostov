@@ -180,6 +180,25 @@ const light = `rgb(${[1, 3, 5].map((i) => parseInt(LIGHT_RGB.slice(i, i + 2), 16
     margin-inline-start: -0.125rem;
   }
 
+  /* Phone turned sideways (short, wide screen): the whole first screen — H1, subtitle and
+     both actions — fits in the viewport. The H1 is sized from the height, not the width. */
+  @media (orientation: landscape) and (max-height: 32rem) {
+    .hero {
+      --fs-h1: clamp(2rem, 11svh, 3.25rem);
+      height: max(18rem, calc(100svh - var(--header-h)));
+    }
+    .hero__sub {
+      max-width: 34rem;
+      padding-top: 0.75rem;
+    }
+    .hero__actions {
+      margin-top: 1.25rem;
+    }
+    .hero__lower {
+      padding-bottom: 1.5rem;
+    }
+  }
+
   /* Desktop: the scrim keeps to the text column and lets the right of the frame
      breathe. Fully opaque up to 3rem past the widest text line (--text-end). */
   @media (min-width: 1024px) {

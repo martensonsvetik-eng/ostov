@@ -319,7 +319,7 @@ const hotspots = [
     margin: 0;
     color: var(--c-muted);
   }
-  .meta > div + div::before {
+  .meta > div:not(:last-child)::after {
     content: '·';
     display: inline-block;
     margin-inline: 0.5em;
@@ -369,14 +369,14 @@ const hotspots = [
     transform: scaleX(0);
     transition: transform 700ms var(--ease-out);
   }
-  .card .meta > div + div::before {
+  .card .meta > div:not(:last-child)::after {
     transition: transform 500ms var(--ease-out);
   }
   @media (hover: hover) and (pointer: fine) {
     .cards > li:hover .meta::after {
       transform: scaleX(1);
     }
-    .cards > li:hover .meta > div + div::before {
+    .cards > li:hover .meta > div:not(:last-child)::after {
       transform: scaleX(2.4);
     }
   }
@@ -618,7 +618,7 @@ const hotspots = [
     .hotspot__dot,
     .card__media::after,
     .card .meta::after,
-    .card .meta > div + div::before {
+    .card .meta > div:not(:last-child)::after {
       transition: none;
     }
     .hotspots.is-pulsing .hotspot__dot::after,

@@ -4,7 +4,7 @@ export const en: Dict = {
   meta: {
     title: 'OSTOV — kitchens in solid wood and stone',
     description:
-      'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
+      'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
   },
   header: {
     skip: 'Skip to content',
@@ -27,7 +27,7 @@ export const en: Dict = {
   },
   hero: {
     title: 'Designer kitchens from our own workshop',
-    subtitle: 'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
+    subtitle: 'Our own workshop near Kaluga. Solid wood, stone, metal. 12 years, 240 projects.',
     cta: 'Discuss your project',
     secondary: 'See projects',
     imageAlt: 'A light kitchen with a white island and a large window onto the garden, in warm afternoon sun',

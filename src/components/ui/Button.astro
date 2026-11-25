@@ -69,6 +69,8 @@ const inactive = disabled || loading;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
+    /* A label that wraps on a narrow phone stays centred in a button. */
+    text-align: center;
     min-width: var(--hit);
     min-height: 3.25rem;
     padding: 0 1.75rem;
@@ -146,6 +148,8 @@ const inactive = disabled || loading;
     padding: 0 0.125rem;
     gap: 0.5rem;
     justify-content: flex-start;
+    /* …but a wrapped text link reads from the left, like the rest of the copy. */
+    text-align: start;
   }
   .btn--link .btn__label {
     text-decoration: underline;
